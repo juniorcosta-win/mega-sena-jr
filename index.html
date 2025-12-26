@@ -3,415 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Sena - Sistema Completo + Análise</title>
+    <title>Mega Sena Pro - Auto</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
-        :root {
-            --bg-color: #1e1e1e;
-            --card-bg: #2d2d2d;
-            --text-color: #e0e0e0;
-            --accent-color: #ff8c00;
-            --accent-hover: #e07b00;
-            --input-bg: #444;
-        }
+        :root { --bg: #1e1e1e; --card: #2d2d2d; --text: #e0e0e0; --accent: #ff8c00; --input-bg: #444; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { max-width: 800px; width: 100%; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1 { text-align: center; color: var(--accent); text-transform: uppercase; margin: 5px 0; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 0.9em; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 800px;
-            width: 100%;
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        h1 { text-align: center; color: var(--accent-color); text-transform: uppercase; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 0.9em; }
-
-        /* Upload */
-        .upload-section {
-            border: 2px dashed #555;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        .upload-section:hover { border-color: var(--accent-color); }
+        .upload-section { border: 2px dashed #555; padding: 15px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        .custom-file-upload { display: inline-block; padding: 8px 15px; cursor: pointer; background: #444; border-radius: 5px; font-weight: bold; font-size: 0.9em; }
         input[type="file"] { display: none; }
-        .custom-file-upload {
-            display: inline-block; padding: 10px 20px; cursor: pointer;
-            background-color: #444; color: white; border-radius: 5px; font-weight: bold;
-        }
 
-        /* Conferidor Manual */
-        .manual-section {
-            background-color: #363636;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border: 1px solid #444;
-        }
-        .manual-section h3 { margin-top: 0; color: var(--accent-color); }
+        .manual-section { background: #363636; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #444; }
+        .input-group { display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; }
+        .num-input { width: 45px; height: 45px; font-size: 1.2em; text-align: center; border-radius: 50%; border: 2px solid #555; background: var(--input-bg); color: white; font-weight: bold; }
+        .check-btn { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .check-result { margin-top: 15px; padding: 10px; background: #222; border-radius: 5px; display: none; }
 
-        .input-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .num-input {
-            width: 50px; height: 50px; font-size: 1.2em; text-align: center;
-            border-radius: 50%; border: 2px solid #555; background-color: var(--input-bg);
-            color: white; font-weight: bold;
-        }
-        .num-input:focus { border-color: var(--accent-color); outline: none; }
-
-        .check-btn {
-            width: 100%; padding: 12px; background-color: var(--accent-color);
-            color: white; border: none; border-radius: 5px; font-weight: bold;
-            cursor: pointer; font-size: 1em;
-        }
-        .check-btn:hover { background-color: var(--accent-hover); }
-
-        .check-result {
-            margin-top: 15px; padding: 10px; background-color: #222;
-            border-radius: 5px; display: none;
-        }
-        .result-item { margin: 5px 0; font-size: 0.95em; }
-        .highlight { color: var(--accent-color); font-weight: bold; }
-
-        /* Stats & Generator */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-        .stat-card { background-color: #363636; padding: 15px; border-radius: 10px; border-left: 4px solid var(--accent-color); }
-        .number-list { display: flex; flex-wrap: wrap; gap: 5px; }
-        .badge { background-color: #222; padding: 5px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; }
-        .badge.hot { color: #ff4444; border: 1px solid #ff4444; }
-        .badge.cold { color: #44aaff; border: 1px solid #44aaff; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #363636; padding: 10px; border-radius: 10px; border-left: 4px solid var(--accent); }
+        .badge { background: #222; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; font-weight: bold; margin: 2px; display: inline-block; }
+        .hot { color: #ff4444; border: 1px solid #ff4444; } .cold { color: #44aaff; border: 1px solid #44aaff; }
 
         .generator-section { text-align: center; border-top: 1px solid #444; padding-top: 20px; }
-        .btn-group { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .action-btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background-color: #555; color: white; }
-        .action-btn:hover { background-color: #666; }
+        .btn-group { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .action-btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #555; color: white; }
+        .result-display { display: flex; justify-content: center; gap: 8px; min-height: 50px; margin-top: 10px; flex-wrap: wrap; }
+        .ball { width: 40px; height: 40px; background: radial-gradient(circle at 30% 30%, var(--accent), #a05a00); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
 
-        .result-display { display: flex; justify-content: center; gap: 10px; min-height: 60px; margin-top: 10px; flex-wrap: wrap; }
-        .ball {
-            width: 40px; height: 40px;
-            background: radial-gradient(circle at 30% 30%, var(--accent-color), #a05a00);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
+        .auto-analysis { margin-top: 15px; padding: 10px; background: #2a2a2a; border: 1px solid #444; border-radius: 5px; font-size: 0.9em; color: #ccc; display: none; }
 
-        /* Análise Automática */
-        .auto-analysis {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 5px;
-            font-size: 0.9em;
-            color: #ccc;
-            display: none; /* Escondido até gerar */
-        }
-
-        /* Histórico */
-        .history-section { margin-top: 30px; border-top: 1px solid #444; padding-top: 20px; }
-        .history-list { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
-        .history-item {
-            background: #333; margin-bottom: 5px; padding: 10px; border-radius: 5px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .history-nums { font-family: monospace; font-size: 1.1em; color: var(--accent-color); }
-        .del-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 0.8em; }
-
-        .save-btn {
-            background-color: #4caf50; color: white; border: none; padding: 8px 15px;
-            border-radius: 5px; cursor: pointer; margin-top: 10px; display: none;
-        }
+        .history-section { margin-top: 20px; border-top: 1px solid #444; padding-top: 15px; }
+        .history-list { list-style: none; padding: 0; max-height: 150px; overflow-y: auto; }
+        .history-item { background: #333; margin-bottom: 5px; padding: 8px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; }
+        .save-btn { background: #4caf50; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Mega Sena Pro</h1>
-    <div class="subtitle">Análise, Conferência e Histórico</div>
+    <div class="subtitle">Sistema Automático GitHub</div>
 
-    <!-- Upload -->
     <div class="upload-section">
-        <label for="fileInput" class="custom-file-upload">📂 Carregar Arquivo (CSV ou XLSX)</label>
+        <div id="statusMsg" style="margin-bottom:10px; font-weight:bold;">Tentando carregar dados...</div>
+        <label for="fileInput" class="custom-file-upload">📂 Carregar Manualmente (se falhar)</label>
         <input type="file" id="fileInput" accept=".csv, .xlsx, .xls">
-        <div id="statusMsg" style="margin-top:10px; font-size:0.9em;">Aguardando arquivo...</div>
     </div>
 
-    <!-- Conferidor Manual -->
     <div class="manual-section">
-        <h3>🔍 Conferir Jogo Manualmente</h3>
-        <div class="subtitle" style="text-align: left; margin-bottom: 10px;">Digite 6 números para ver se já foram sorteados:</div>
-
+        <h3>🔍 Conferir Manual</h3>
         <div class="input-group">
-            <input type="number" class="num-input" min="1" max="60">
-            <input type="number" class="num-input" min="1" max="60">
-            <input type="number" class="num-input" min="1" max="60">
-            <input type="number" class="num-input" min="1" max="60">
-            <input type="number" class="num-input" min="1" max="60">
-            <input type="number" class="num-input" min="1" max="60">
+            <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
+            <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
+            <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
         </div>
-        <button class="check-btn" onclick="conferirManual()">Verificar no Histórico</button>
-
+        <button class="check-btn" onclick="conferirManual()">Verificar</button>
         <div id="manualResult" class="check-result"></div>
-        <button id="btnSalvarManual" class="save-btn" onclick="salvarJogoAtual('manual')">💾 Salvar este Jogo</button>
+        <button id="btnSalvarManual" class="save-btn" onclick="salvarJogoAtual('manual')">💾 Salvar</button>
     </div>
 
-    <!-- Estatísticas -->
     <div class="stats-grid">
-        <div class="stat-card">
-            <h3>🔥 Mais Frequentes</h3>
-            <div class="number-list" id="hotNumbers">--</div>
-        </div>
-        <div class="stat-card" style="border-left-color: #44aaff;">
-            <h3>❄️ Menos Frequentes</h3>
-            <div class="number-list" id="coldNumbers">--</div>
-        </div>
+        <div class="stat-card"><h3>🔥 Quentes</h3><div id="hotNumbers">--</div></div>
+        <div class="stat-card" style="border-left-color: #44aaff;"><h3>❄️ Frios</h3><div id="coldNumbers">--</div></div>
     </div>
 
-    <!-- Gerador -->
     <div class="generator-section">
         <div class="btn-group">
-            <button class="action-btn" onclick="gerarJogo('quente')">Gerar Quente</button>
-            <button class="action-btn" onclick="gerarJogo('equilibrado')">Gerar Equilibrado</button>
-            <button class="action-btn" onclick="gerarJogo('surpresa')">Surpresinha</button>
+            <button class="action-btn" onclick="gerarJogo('quente')">Quente</button>
+            <button class="action-btn" onclick="gerarJogo('equilibrado')">Equilibrado</button>
+            <button class="action-btn" onclick="gerarJogo('surpresa')">Surpresa</button>
         </div>
-
         <div id="resultado" class="result-display"></div>
-
-        <!-- Nova Área de Análise Automática -->
         <div id="analiseAuto" class="auto-analysis"></div>
-
-        <button id="btnSalvarGerado" class="save-btn" onclick="salvarJogoAtual('gerado')">💾 Salvar Jogo Gerado</button>
+        <button id="btnSalvarGerado" class="save-btn" onclick="salvarJogoAtual('gerado')">💾 Salvar</button>
     </div>
 
-    <!-- Histórico Salvo -->
     <div class="history-section">
-        <h3>📜 Meus Jogos Salvos</h3>
+        <h3>📜 Jogos Salvos</h3>
         <ul id="listaHistorico" class="history-list"></ul>
-        <button onclick="limparHistorico()" style="background:#555; color:#aaa; border:none; padding:5px; cursor:pointer; font-size:0.8em; margin-top:10px;">Limpar Histórico</button>
+        <button onclick="limparHistorico()" style="background:none; color:#888; border:none; cursor:pointer; font-size:0.8em; margin-top:5px;">Limpar Tudo</button>
     </div>
 </div>
 
 <script>
     let historicoJogos = [];
     let frequencia = {};
-    let jogoAtualManual = [];
-    let jogoAtualGerado = [];
+    let jogoAtualManual = [], jogoAtualGerado = [];
 
-    carregarHistoricoSalvo();
+    // Tenta carregar automaticamente ao abrir
+    window.onload = function() {
+        carregarHistoricoSalvo();
+        carregarCSVAutomatico();
+    };
 
-    // --- LEITURA DE ARQUIVO ---
+    function carregarCSVAutomatico() {
+        fetch('megasena_limpa.csv')
+            .then(response => {
+                if (!response.ok) throw new Error("Arquivo não encontrado");
+                return response.text();
+            })
+            .then(text => {
+                processarCSVTexto(text);
+                document.getElementById('statusMsg').innerHTML = `✅ <b>Conectado!</b> Dados carregados automaticamente.`;
+                document.getElementById('statusMsg').style.color = '#4caf50';
+            })
+            .catch(err => {
+                document.getElementById('statusMsg').innerHTML = `⚠️ Modo Offline. Carregue o arquivo manualmente.`;
+                document.getElementById('statusMsg').style.color = '#ffaa00';
+            });
+    }
+
     document.getElementById('fileInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             const data = new Uint8Array(e.target.result);
             try {
                 const workbook = XLSX.read(data, {type: 'array'});
-                const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                const json = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: ""});
+                const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
                 historicoJogos = scannerInteligente(json);
-                if (historicoJogos.length > 0) {
-                    processarEstatisticas();
-                    document.getElementById('statusMsg').innerHTML = `✅ <b>${historicoJogos.length}</b> concursos carregados.`;
-                    document.getElementById('statusMsg').style.color = '#4caf50';
-                }
+                if(historicoJogos.length > 0) sucessoCarregamento(historicoJogos.length);
             } catch (error) {
-                const textReader = new FileReader();
-                textReader.onload = function(evt) {
-                    const lines = evt.target.result.split('\n');
-                    historicoJogos = [];
-                    lines.forEach(line => {
-                        let nums = line.split(/[;,]/).map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 60);
-                        if (nums.length >= 6) historicoJogos.push(nums.slice(0, 6));
-                    });
-                    if (historicoJogos.length > 0) {
-                        processarEstatisticas();
-                        document.getElementById('statusMsg').innerHTML = `✅ <b>${historicoJogos.length}</b> concursos carregados (CSV).`;
-                        document.getElementById('statusMsg').style.color = '#4caf50';
-                    }
-                };
-                textReader.readAsText(file);
+                const tr = new FileReader();
+                tr.onload = evt => processarCSVTexto(evt.target.result);
+                tr.readAsText(file);
             }
         };
         reader.readAsArrayBuffer(file);
     });
 
+    function processarCSVTexto(text) {
+        const lines = text.split('\n');
+        historicoJogos = [];
+        lines.forEach(line => {
+            let nums = line.split(/[;,]/).map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 1 && n <= 60);
+            if (nums.length >= 6) historicoJogos.push(nums.slice(0, 6));
+        });
+        if (historicoJogos.length > 0) sucessoCarregamento(historicoJogos.length);
+    }
+
+    function sucessoCarregamento(qtd) {
+        processarEstatisticas();
+        document.getElementById('statusMsg').innerHTML = `✅ <b>${qtd}</b> concursos carregados.`;
+        document.getElementById('statusMsg').style.color = '#4caf50';
+    }
+
     function scannerInteligente(linhas) {
         let contagem = {};
-        linhas.forEach(linha => {
-            linha.forEach((cel, idx) => {
-                let v = parseInt(cel);
-                if (!isNaN(v) && v >= 1 && v <= 60) contagem[idx] = (contagem[idx] || 0) + 1;
-            });
-        });
-        let cols = Object.keys(contagem).map(Number).sort((a,b) => contagem[b] - contagem[a]).slice(0, 6).sort((a,b) => a-b);
-        if (cols.length < 6) return [];
-        let jogos = [];
-        linhas.forEach(linha => {
-            let jogo = [];
-            cols.forEach(c => {
-                let v = parseInt(linha[c]);
-                if (!isNaN(v) && v >= 1 && v <= 60) jogo.push(v);
-            });
-            if (jogo.length === 6) jogos.push(jogo);
-        });
+        linhas.forEach(l => l.forEach((c, i) => { let v=parseInt(c); if(v>=1&&v<=60) contagem[i]=(contagem[i]||0)+1; }));
+        let cols = Object.keys(contagem).map(Number).sort((a,b)=>contagem[b]-contagem[a]).slice(0,6).sort((a,b)=>a-b);
+        if(cols.length<6) return [];
+        let jogos=[];
+        linhas.forEach(l => { let j=[]; cols.forEach(c=>{ let v=parseInt(l[c]); if(v>=1&&v<=60) j.push(v); }); if(j.length===6) jogos.push(j); });
         return jogos;
     }
 
     function processarEstatisticas() {
-        frequencia = {};
-        for(let i=1; i<=60; i++) frequencia[i] = 0;
-        historicoJogos.forEach(j => j.forEach(n => frequencia[n]++));
-        let ordenado = Object.keys(frequencia).map(k => ({n: parseInt(k), q: frequencia[k]})).sort((a,b) => b.q - a.q);
-        document.getElementById('hotNumbers').innerHTML = ordenado.slice(0,5).map(i => `<span class="badge hot">${i.n}</span>`).join(' ');
-        document.getElementById('coldNumbers').innerHTML = ordenado.slice(-5).reverse().map(i => `<span class="badge cold">${i.n}</span>`).join(' ');
+        frequencia = {}; for(let i=1;i<=60;i++) frequencia[i]=0;
+        historicoJogos.forEach(j=>j.forEach(n=>frequencia[n]++));
+        let ord = Object.keys(frequencia).map(k=>({n:parseInt(k),q:frequencia[k]})).sort((a,b)=>b.q-a.q);
+        document.getElementById('hotNumbers').innerHTML = ord.slice(0,5).map(i=>`<span class="badge hot">${i.n}</span>`).join(' ');
+        document.getElementById('coldNumbers').innerHTML = ord.slice(-5).reverse().map(i=>`<span class="badge cold">${i.n}</span>`).join(' ');
     }
 
-    // --- CONFERIDOR MANUAL ---
     function conferirManual() {
-        if (historicoJogos.length === 0) { alert("Carregue o arquivo primeiro!"); return; }
-        let inputs = document.querySelectorAll('.num-input');
-        let aposta = [];
-        inputs.forEach(inp => {
-            let val = parseInt(inp.value);
-            if (!isNaN(val) && val >= 1 && val <= 60) aposta.push(val);
-        });
-        aposta = [...new Set(aposta)].sort((a,b) => a-b);
-        if (aposta.length !== 6) { alert("Digite 6 números válidos."); return; }
-
+        if(historicoJogos.length===0) return alert("Sem dados!");
+        let aposta = Array.from(document.querySelectorAll('.num-input')).map(i=>parseInt(i.value)).filter(n=>!isNaN(n)&&n>=1&&n<=60);
+        aposta = [...new Set(aposta)].sort((a,b)=>a-b);
+        if(aposta.length!==6) return alert("Digite 6 números válidos.");
         jogoAtualManual = aposta;
-        let resultado = analisarJogo(aposta);
-
-        let div = document.getElementById('manualResult');
-        div.style.display = 'block';
-        let html = `<div>Seus números: <span class="highlight">${aposta.join(' - ')}</span></div><hr style="border-color:#444">`;
-        html += resultado.sena > 0 ? `<div class="result-item" style="color:#4caf50">🏆 <b>SENA:</b> Saiu ${resultado.sena} vez(es)!</div>` : `<div class="result-item">❌ <b>Sena:</b> Nunca saiu.</div>`;
-        html += `<div class="result-item">🌟 <b>Quina:</b> ${resultado.quina} vezes.</div>`;
-        html += `<div class="result-item">🍀 <b>Quadra:</b> ${resultado.quadra} vezes.</div>`;
-        div.innerHTML = html;
-
-        document.getElementById('btnSalvarManual').style.display = 'inline-block';
+        let res = analisarJogo(aposta);
+        let div = document.getElementById('manualResult'); div.style.display='block';
+        div.innerHTML = `<div>Seus: <b style="color:var(--accent)">${aposta.join('-')}</b></div><hr style="border-color:#444">` +
+            (res.sena>0 ? `<div style="color:#4caf50">🏆 SENA: ${res.sena}x</div>` : `<div>❌ Sena: 0x</div>`) +
+            `<div>🌟 Quina: ${res.quina}x | 🍀 Quadra: ${res.quadra}x</div>`;
+        document.getElementById('btnSalvarManual').style.display='inline-block';
     }
 
-    // --- GERADOR COM ANÁLISE AUTOMÁTICA ---
     function gerarJogo(tipo) {
-        if (historicoJogos.length === 0) { alert("Carregue o arquivo primeiro!"); return; }
-        let nums = Object.keys(frequencia).map(Number);
-        let escolhidos = [];
-        if (tipo === 'surpresa') {
-            escolhidos = nums.sort(() => 0.5 - Math.random()).slice(0,6);
-        } else {
-            let pool = [];
-            nums.forEach(n => {
-                let peso = tipo === 'quente' ? frequencia[n] : (1000 - frequencia[n]);
-                for(let i=0; i<Math.ceil(peso/10); i++) pool.push(n);
-            });
-            while(escolhidos.length < 6) {
-                let r = pool[Math.floor(Math.random() * pool.length)];
-                if(!escolhidos.includes(r)) escolhidos.push(r);
-            }
+        if(historicoJogos.length===0) return alert("Sem dados!");
+        let nums = Object.keys(frequencia).map(Number), esc = [];
+        if(tipo==='surpresa') esc = nums.sort(()=>0.5-Math.random()).slice(0,6);
+        else {
+            let pool=[]; nums.forEach(n=>{ let p=tipo==='quente'?frequencia[n]:(1000-frequencia[n]); for(let i=0;i<Math.ceil(p/10);i++) pool.push(n); });
+            while(esc.length<6) { let r=pool[Math.floor(Math.random()*pool.length)]; if(!esc.includes(r)) esc.push(r); }
         }
-        jogoAtualGerado = escolhidos.sort((a,b) => a-b);
-        exibirResultado(jogoAtualGerado);
-
-        // --- NOVA FUNÇÃO: ANÁLISE AUTOMÁTICA ---
-        let analise = analisarJogo(jogoAtualGerado);
-        let divAnalise = document.getElementById('analiseAuto');
-        divAnalise.style.display = 'block';
-
-        let textoAnalise = "🔍 <b>Análise Histórica:</b> ";
-        if (analise.sena > 0) {
-            textoAnalise += `<span style="color:#ff4444">⚠️ ATENÇÃO: Esse jogo JÁ SAIU ${analise.sena} vez(es) na Sena!</span>`;
-        } else {
-            textoAnalise += `<span style="color:#4caf50">✅ Jogo Inédito (Nunca deu Sena).</span>`;
-        }
-        textoAnalise += `<br><small>No passado, teria feito ${analise.quina} Quinas e ${analise.quadra} Quadras.</small>`;
-
-        divAnalise.innerHTML = textoAnalise;
-        document.getElementById('btnSalvarGerado').style.display = 'inline-block';
+        jogoAtualGerado = esc.sort((a,b)=>a-b);
+        document.getElementById('resultado').innerHTML = jogoAtualGerado.map(n=>`<div class="ball">${n<10?'0'+n:n}</div>`).join('');
+        let res = analisarJogo(jogoAtualGerado);
+        let div = document.getElementById('analiseAuto'); div.style.display='block';
+        div.innerHTML = (res.sena>0 ? `<span style="color:#ff4444">⚠️ JÁ SAIU ${res.sena}x!</span>` : `<span style="color:#4caf50">✅ Inédito (Nunca deu Sena)</span>`) + `<br><small>Quinas: ${res.quina} | Quadras: ${res.quadra}</small>`;
+        document.getElementById('btnSalvarGerado').style.display='inline-block';
     }
 
-    function analisarJogo(jogo) {
-        let sena = 0, quina = 0, quadra = 0;
-        historicoJogos.forEach((sorteio) => {
-            let acertos = sorteio.filter(num => jogo.includes(num)).length;
-            if (acertos === 6) sena++;
-            if (acertos === 5) quina++;
-            if (acertos === 4) quadra++;
-        });
-        return { sena, quina, quadra };
+    function analisarJogo(j) {
+        let s=0, q=0, qa=0;
+        historicoJogos.forEach(h => { let ac=h.filter(n=>j.includes(n)).length; if(ac===6)s++; if(ac===5)q++; if(ac===4)qa++; });
+        return {sena:s, quina:q, quadra:qa};
     }
 
-    function exibirResultado(numeros) {
-        const div = document.getElementById('resultado');
-        div.innerHTML = '';
-        numeros.forEach((n, i) => {
-            setTimeout(() => div.innerHTML += `<div class="ball">${n < 10 ? '0'+n : n}</div>`, i*100);
-        });
-    }
-
-    // --- HISTÓRICO (LOCALSTORAGE) ---
-    function salvarJogoAtual(origem) {
-        let jogo = origem === 'manual' ? jogoAtualManual : jogoAtualGerado;
-        if (!jogo || jogo.length !== 6) return;
-        let historico = JSON.parse(localStorage.getItem('meusJogosMega')) || [];
-        let jaExiste = historico.some(h => JSON.stringify(h.numeros) === JSON.stringify(jogo));
-        if (jaExiste) { alert("Esse jogo já está salvo!"); return; }
-        historico.push({ data: new Date().toLocaleDateString(), numeros: jogo, tipo: origem === 'manual' ? 'Manual' : 'Gerado' });
-        localStorage.setItem('meusJogosMega', JSON.stringify(historico));
+    function salvarJogoAtual(o) {
+        let j = o==='manual'?jogoAtualManual:jogoAtualGerado;
+        if(!j || j.length!==6) return;
+        let h = JSON.parse(localStorage.getItem('meusJogosMega'))||[];
+        if(h.some(x=>JSON.stringify(x.n)===JSON.stringify(j))) return alert("Já salvo!");
+        h.push({d:new Date().toLocaleDateString(), n:j, t:o==='manual'?'Manual':'Gerado'});
+        localStorage.setItem('meusJogosMega', JSON.stringify(h));
         carregarHistoricoSalvo();
-        alert("Jogo salvo com sucesso!");
     }
 
     function carregarHistoricoSalvo() {
-        let historico = JSON.parse(localStorage.getItem('meusJogosMega')) || [];
-        let lista = document.getElementById('listaHistorico');
-        lista.innerHTML = '';
-        if (historico.length === 0) { lista.innerHTML = '<li style="color:#666; text-align:center;">Nenhum jogo salvo ainda.</li>'; return; }
-        historico.reverse().forEach((item, index) => {
-            let li = document.createElement('li');
-            li.className = 'history-item';
-            li.innerHTML = `<div><small style="color:#888">${item.data} (${item.tipo})</small><br><span class="history-nums">${item.numeros.map(n => n < 10 ? '0'+n : n).join(' - ')}</span></div><button class="del-btn" onclick="removerItem(${historico.length - 1 - index})">X</button>`;
-            lista.appendChild(li);
+        let h = JSON.parse(localStorage.getItem('meusJogosMega'))||[], l = document.getElementById('listaHistorico'); l.innerHTML='';
+        if(h.length===0) l.innerHTML='<li style="color:#666;text-align:center">Vazio</li>';
+        h.reverse().forEach((x,i) => {
+            let li=document.createElement('li'); li.className='history-item';
+            li.innerHTML=`<div><small style="color:#888">${x.d} (${x.t})</small><br><b style="color:var(--accent)">${x.n.map(n=>n<10?'0'+n:n).join('-')}</b></div><button onclick="rmItem(${h.length-1-i})" style="color:#ff4444;background:none;border:none;cursor:pointer">X</button>`;
+            l.appendChild(li);
         });
     }
-
-    function removerItem(index) {
-        let historico = JSON.parse(localStorage.getItem('meusJogosMega')) || [];
-        historico.splice(index, 1);
-        localStorage.setItem('meusJogosMega', JSON.stringify(historico));
-        carregarHistoricoSalvo();
-    }
-
-    function limparHistorico() {
-        if(confirm("Tem certeza que quer apagar todos os jogos salvos?")) {
-            localStorage.removeItem('meusJogosMega');
-            carregarHistoricoSalvo();
-        }
-    }
+    function rmItem(i) { let h=JSON.parse(localStorage.getItem('meusJogosMega'))||[]; h.splice(i,1); localStorage.setItem('meusJogosMega',JSON.stringify(h)); carregarHistoricoSalvo(); }
+    function limparHistorico() { if(confirm("Apagar tudo?")) { localStorage.removeItem('meusJogosMega'); carregarHistoricoSalvo(); } }
 </script>
-
 </body>
 </html>
