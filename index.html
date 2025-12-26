@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Sena Pro - V3 FINAL</title>
+    <title>Mega Sena Pro - V4 FINAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -73,7 +73,7 @@
 <!-- LOGIN -->
 <div id="loginScreen">
     <div class="login-box">
-        <h2 style="color:var(--accent); margin-top:0;">🚀 Mega Pro V3</h2>
+        <h2 style="color:var(--accent); margin-top:0;">🚀 Mega Pro V4</h2>
         <p style="color:#ccc; font-size:0.9em;">Acesso Restrito ao Sistema</p>
         <input type="password" id="senhaInput" class="login-input" placeholder="Senha">
         <button onclick="verificarSenha()" class="login-btn">ENTRAR</button>
@@ -84,7 +84,7 @@
 <!-- APP -->
 <div id="appContent">
     <div class="container">
-        <h1>MEGA SENA PRO <span style="font-size:0.5em; background:var(--accent); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">V3</span></h1>
+        <h1>MEGA SENA PRO <span style="font-size:0.5em; background:var(--accent); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">V4</span></h1>
         <div class="subtitle" id="statusMsg">Carregando sistema...</div>
 
         <!-- GRÁFICO -->
@@ -139,7 +139,9 @@
         <!-- ABA 3: CONFERIDOR -->
         <div id="conferir" class="tab-content">
             <div class="section-box">
-                <p style="text-align:center; color:#888; font-size:0.9em;">Digite seus números ou use o botão de teste para provar que funciona.</p>
+                <p style="text-align:center; color:#888; font-size:0.9em;">
+                    Dica: Copie seus 6 números e <b>cole</b> na primeira caixinha para preencher tudo!
+                </p>
                 <div class="input-group">
                     <input type="number" class="num-input manual-inp" min="1" max="60"><input type="number" class="num-input manual-inp" min="1" max="60">
                     <input type="number" class="num-input manual-inp" min="1" max="60"><input type="number" class="num-input manual-inp" min="1" max="60">
@@ -178,6 +180,7 @@
         carregarHistoricoSalvo();
         carregarCSVAutomatico();
         inicializarInputsDesdobra();
+        ativarColagemMagica(); // Ativa a função de colar
     };
 
     function verificarSenha() {
@@ -195,6 +198,32 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         event.target.classList.add('active');
+    }
+
+    // --- COLAGEM MÁGICA ---
+    function ativarColagemMagica() {
+        const inputs = document.querySelectorAll('.manual-inp');
+        inputs.forEach(input => {
+            input.addEventListener('paste', (e) => {
+                // Pega o texto colado
+                let paste = (e.clipboardData || window.clipboardData).getData('text');
+                // Procura por sequências de números
+                let numbers = paste.match(/\d+/g);
+
+                if (numbers && numbers.length > 1) {
+                    e.preventDefault(); // Impede a colagem normal
+                    // Filtra números válidos (1-60)
+                    let validNums = numbers.map(n => parseInt(n)).filter(n => n >= 1 && n <= 60);
+
+                    // Distribui nos inputs
+                    inputs.forEach((inp, index) => {
+                        if (validNums[index] !== undefined) {
+                            inp.value = validNums[index];
+                        }
+                    });
+                }
+            });
+        });
     }
 
     function carregarCSVAutomatico() {
@@ -227,7 +256,6 @@
         const lines = text.split('\n');
         let matrix = [];
         lines.forEach(l => {
-            // Aceita ponto e virgula, virgula, tabulação ou pipe
             let cols = l.split(/[;,\t|]/).map(x => x.trim());
             matrix.push(cols);
         });
@@ -249,7 +277,6 @@
             linha.forEach((cel, idx) => {
                 if(typeof cel === 'string' && (cel.includes('/') || cel.includes('-') || cel.includes(':'))) return;
                 let v = parseInt(cel);
-                // Filtro rigoroso: só aceita 1 a 60
                 if (!isNaN(v) && v >= 1 && v <= 60) {
                     contagem[idx] = (contagem[idx] || 0) + 1;
                 }
@@ -287,17 +314,12 @@
         });
     }
 
-    // --- FUNÇÃO DE TESTE (PROVA REAL) ---
     function preencherUltimo() {
         if(historicoJogos.length === 0) return alert("Carregue os dados primeiro!");
-        // Pega o primeiro jogo da lista (geralmente o mais recente ou o primeiro do CSV)
         let ultimo = historicoJogos[0]; 
-        // Se o CSV estiver invertido, pega o último
         if(historicoJogos.length > 1 && historicoJogos[0][0] < historicoJogos[historicoJogos.length-1][0]) {
-             // Lógica simples: vamos pegar um jogo aleatório do histórico para garantir
              ultimo = historicoJogos[Math.floor(Math.random() * historicoJogos.length)];
         }
-
         let inps = document.querySelectorAll('.manual-inp');
         ultimo.forEach((n, i) => { if(inps[i]) inps[i].value = n; });
         alert("Preenchi com um jogo REAL do histórico. Agora clique em VERIFICAR.");
