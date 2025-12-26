@@ -28,15 +28,12 @@ git clone https://github.com/juniorcosta-win/mega-sena-jr.git
 cd mega-sena-jr
 ```
 
-2. **Instale as dependências (opcional):**
-```bash
-pip install -r requirements.txt
-```
-
-3. **Execute o sistema:**
+2. **Execute o sistema:**
 ```bash
 python mega_sena.py
 ```
+
+Não há dependências externas! O sistema usa apenas bibliotecas padrão do Python.
 
 ## 💡 Como Usar
 

@@ -8,10 +8,8 @@ for the Brazilian Mega Sena lottery.
 """
 
 import random
-import itertools
 from collections import Counter
 from typing import List, Set, Tuple
-import json
 from datetime import datetime
 
 
@@ -43,8 +41,15 @@ class MegaSenaGenerator:
         """Get the least frequently drawn numbers (cold numbers)"""
         if not self.frequency_map:
             return list(range(self.MAX_NUMBER - bottom_n + 1, self.MAX_NUMBER + 1))
-        all_numbers = set(range(self.MIN_NUMBER, self.MAX_NUMBER + 1))
-        return sorted(all_numbers - set(self.get_hot_numbers(self.MAX_NUMBER - bottom_n)))[:bottom_n]
+        
+        # Get all numbers sorted by frequency (ascending)
+        all_numbers_by_freq = sorted(
+            range(self.MIN_NUMBER, self.MAX_NUMBER + 1),
+            key=lambda n: self.frequency_map.get(n, 0)
+        )
+        
+        # Return the least frequent ones
+        return all_numbers_by_freq[:bottom_n]
     
     def generate_balanced_combination(self) -> List[int]:
         """Generate a balanced combination using statistical analysis"""
@@ -89,8 +94,8 @@ class MegaSenaGenerator:
     
     def generate_fibonacci_based(self) -> List[int]:
         """Generate combination based on Fibonacci sequence"""
-        # Fibonacci numbers up to 60
-        fib = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+        # Fibonacci numbers up to 60 (unique values only)
+        fib = [1, 2, 3, 5, 8, 13, 21, 34, 55]
         fib_in_range = [f for f in fib if f <= self.MAX_NUMBER]
         
         # Add some Fibonacci numbers
