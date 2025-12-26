@@ -54,15 +54,20 @@ class MegaSenaGenerator:
         hot_numbers = self.get_hot_numbers(20)
         cold_numbers = self.get_cold_numbers(20)
         
+        # Ensure no overlap between hot and cold
+        cold_numbers = [n for n in cold_numbers if n not in hot_numbers]
+        
         # Pick 3 hot numbers
-        numbers.extend(random.sample(hot_numbers, 3))
+        numbers.extend(random.sample(hot_numbers, min(3, len(hot_numbers))))
         
-        # Pick 2 cold numbers
-        numbers.extend(random.sample(cold_numbers, 2))
+        # Pick 2 cold numbers (or fewer if not enough available)
+        if cold_numbers:
+            numbers.extend(random.sample(cold_numbers, min(2, len(cold_numbers))))
         
-        # Pick 1 random number
-        remaining = set(range(self.MIN_NUMBER, self.MAX_NUMBER + 1)) - set(numbers)
-        numbers.append(random.choice(list(remaining)))
+        # Fill remaining slots with random numbers
+        while len(numbers) < self.NUMBERS_PER_GAME:
+            remaining = set(range(self.MIN_NUMBER, self.MAX_NUMBER + 1)) - set(numbers)
+            numbers.append(random.choice(list(remaining)))
         
         return sorted(numbers)
     
