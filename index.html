@@ -3,12 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Sena Pro - Auto</title>
+    <title>Mega Sena Pro - Acesso Restrito</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         :root { --bg: #1e1e1e; --card: #2d2d2d; --text: #e0e0e0; --accent: #ff8c00; --input-bg: #444; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+
+        /* TELA DE LOGIN */
+        #loginScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #151515; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .login-box {
+            background: #2d2d2d; padding: 40px; border-radius: 15px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #444; width: 90%; max-width: 350px;
+        }
+        .login-input {
+            width: 100%; padding: 12px; margin: 15px 0; border-radius: 5px; border: 1px solid #555;
+            background: #333; color: white; font-size: 1.1em; text-align: center; box-sizing: border-box;
+        }
+        .login-btn {
+            width: 100%; padding: 12px; background: var(--accent); color: white; border: none;
+            border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1.1em;
+        }
+        .login-btn:hover { opacity: 0.9; }
+
+        /* CONTEÚDO DO APP (Escondido inicialmente) */
+        #appContent { display: none; width: 100%; padding: 20px; box-sizing: border-box; flex-direction: column; align-items: center; }
+
         .container { max-width: 800px; width: 100%; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         h1 { text-align: center; color: var(--accent); text-transform: uppercase; margin: 5px 0; }
         .subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 0.9em; }
@@ -44,61 +68,86 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>Mega Sena Pro</h1>
-    <div class="subtitle">Sistema Automático GitHub</div>
-
-    <div class="upload-section">
-        <div id="statusMsg" style="margin-bottom:10px; font-weight:bold;">Tentando carregar dados...</div>
-        <label for="fileInput" class="custom-file-upload">📂 Carregar Manualmente (se falhar)</label>
-        <input type="file" id="fileInput" accept=".csv, .xlsx, .xls">
+<!-- TELA DE LOGIN -->
+<div id="loginScreen">
+    <div class="login-box">
+        <h2 style="color:var(--accent); margin-top:0;">🔒 Acesso Restrito</h2>
+        <p style="color:#ccc; font-size:0.9em;">Digite a senha para acessar o sistema Mega Sena Pro.</p>
+        <input type="password" id="senhaInput" class="login-input" placeholder="Senha de Acesso">
+        <button onclick="verificarSenha()" class="login-btn">ENTRAR</button>
+        <p id="msgErro" style="color:#ff4444; display:none; margin-top:10px;">Senha incorreta!</p>
     </div>
+</div>
 
-    <div class="manual-section">
-        <h3>🔍 Conferir Manual</h3>
-        <div class="input-group">
-            <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
-            <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
-            <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
+<!-- CONTEÚDO DO SISTEMA -->
+<div id="appContent">
+    <div class="container">
+        <h1>Mega Sena Pro</h1>
+        <div class="subtitle">Sistema Profissional VIP</div>
+
+        <div class="upload-section">
+            <div id="statusMsg" style="margin-bottom:10px; font-weight:bold;">Tentando carregar dados...</div>
+            <label for="fileInput" class="custom-file-upload">📂 Carregar Manualmente (se falhar)</label>
+            <input type="file" id="fileInput" accept=".csv, .xlsx, .xls">
         </div>
-        <button class="check-btn" onclick="conferirManual()">Verificar</button>
-        <div id="manualResult" class="check-result"></div>
-        <button id="btnSalvarManual" class="save-btn" onclick="salvarJogoAtual('manual')">💾 Salvar</button>
-    </div>
 
-    <div class="stats-grid">
-        <div class="stat-card"><h3>🔥 Quentes</h3><div id="hotNumbers">--</div></div>
-        <div class="stat-card" style="border-left-color: #44aaff;"><h3>❄️ Frios</h3><div id="coldNumbers">--</div></div>
-    </div>
-
-    <div class="generator-section">
-        <div class="btn-group">
-            <button class="action-btn" onclick="gerarJogo('quente')">Quente</button>
-            <button class="action-btn" onclick="gerarJogo('equilibrado')">Equilibrado</button>
-            <button class="action-btn" onclick="gerarJogo('surpresa')">Surpresa</button>
+        <div class="manual-section">
+            <h3>🔍 Conferir Manual</h3>
+            <div class="input-group">
+                <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
+                <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
+                <input type="number" class="num-input" min="1" max="60"><input type="number" class="num-input" min="1" max="60">
+            </div>
+            <button class="check-btn" onclick="conferirManual()">Verificar</button>
+            <div id="manualResult" class="check-result"></div>
+            <button id="btnSalvarManual" class="save-btn" onclick="salvarJogoAtual('manual')">💾 Salvar</button>
         </div>
-        <div id="resultado" class="result-display"></div>
-        <div id="analiseAuto" class="auto-analysis"></div>
-        <button id="btnSalvarGerado" class="save-btn" onclick="salvarJogoAtual('gerado')">💾 Salvar</button>
-    </div>
 
-    <div class="history-section">
-        <h3>📜 Jogos Salvos</h3>
-        <ul id="listaHistorico" class="history-list"></ul>
-        <button onclick="limparHistorico()" style="background:none; color:#888; border:none; cursor:pointer; font-size:0.8em; margin-top:5px;">Limpar Tudo</button>
+        <div class="stats-grid">
+            <div class="stat-card"><h3>🔥 Quentes</h3><div id="hotNumbers">--</div></div>
+            <div class="stat-card" style="border-left-color: #44aaff;"><h3>❄️ Frios</h3><div id="coldNumbers">--</div></div>
+        </div>
+
+        <div class="generator-section">
+            <div class="btn-group">
+                <button class="action-btn" onclick="gerarJogo('quente')">Quente</button>
+                <button class="action-btn" onclick="gerarJogo('equilibrado')">Equilibrado</button>
+                <button class="action-btn" onclick="gerarJogo('surpresa')">Surpresa</button>
+            </div>
+            <div id="resultado" class="result-display"></div>
+            <div id="analiseAuto" class="auto-analysis"></div>
+            <button id="btnSalvarGerado" class="save-btn" onclick="salvarJogoAtual('gerado')">💾 Salvar</button>
+        </div>
+
+        <div class="history-section">
+            <h3>📜 Jogos Salvos</h3>
+            <ul id="listaHistorico" class="history-list"></ul>
+            <button onclick="limparHistorico()" style="background:none; color:#888; border:none; cursor:pointer; font-size:0.8em; margin-top:5px;">Limpar Tudo</button>
+        </div>
     </div>
 </div>
 
 <script>
+    // --- LÓGICA DE SENHA ---
+    function verificarSenha() {
+        const senhaDigitada = document.getElementById('senhaInput').value;
+        const senhaCorreta = "mega2025"; // <--- MUDE SUA SENHA AQUI
+
+        if (senhaDigitada === senhaCorreta) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appContent').style.display = 'flex';
+            // Inicia o sistema
+            carregarHistoricoSalvo();
+            carregarCSVAutomatico();
+        } else {
+            document.getElementById('msgErro').style.display = 'block';
+        }
+    }
+
+    // --- SISTEMA MEGA SENA ---
     let historicoJogos = [];
     let frequencia = {};
     let jogoAtualManual = [], jogoAtualGerado = [];
-
-    // Tenta carregar automaticamente ao abrir
-    window.onload = function() {
-        carregarHistoricoSalvo();
-        carregarCSVAutomatico();
-    };
 
     function carregarCSVAutomatico() {
         fetch('megasena_limpa.csv')
