@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Sena Pro - V4 FINAL</title>
+    <title>Mega Sena Pro - V5 FINAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -73,7 +73,7 @@
 <!-- LOGIN -->
 <div id="loginScreen">
     <div class="login-box">
-        <h2 style="color:var(--accent); margin-top:0;">🚀 Mega Pro V4</h2>
+        <h2 style="color:var(--accent); margin-top:0;">🚀 Mega Pro V5</h2>
         <p style="color:#ccc; font-size:0.9em;">Acesso Restrito ao Sistema</p>
         <input type="password" id="senhaInput" class="login-input" placeholder="Senha">
         <button onclick="verificarSenha()" class="login-btn">ENTRAR</button>
@@ -84,7 +84,7 @@
 <!-- APP -->
 <div id="appContent">
     <div class="container">
-        <h1>MEGA SENA PRO <span style="font-size:0.5em; background:var(--accent); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">V4</span></h1>
+        <h1>MEGA SENA PRO <span style="font-size:0.5em; background:var(--accent); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">V5</span></h1>
         <div class="subtitle" id="statusMsg">Carregando sistema...</div>
 
         <!-- GRÁFICO -->
@@ -180,7 +180,7 @@
         carregarHistoricoSalvo();
         carregarCSVAutomatico();
         inicializarInputsDesdobra();
-        ativarColagemMagica(); // Ativa a função de colar
+        ativarColagemMagica();
     };
 
     function verificarSenha() {
@@ -200,27 +200,33 @@
         event.target.classList.add('active');
     }
 
-    // --- COLAGEM MÁGICA ---
+    // --- COLAGEM MÁGICA V5 (CORRIGIDA) ---
     function ativarColagemMagica() {
         const inputs = document.querySelectorAll('.manual-inp');
         inputs.forEach(input => {
             input.addEventListener('paste', (e) => {
-                // Pega o texto colado
+                e.preventDefault(); // BLOQUEIA A COLAGEM PADRÃO
+
                 let paste = (e.clipboardData || window.clipboardData).getData('text');
-                // Procura por sequências de números
-                let numbers = paste.match(/\d+/g);
+                // Separa por qualquer coisa que não seja número (espaço, virgula, traço, tab)
+                let numbers = paste.split(/[\D]+/).filter(n => n.trim() !== '');
 
-                if (numbers && numbers.length > 1) {
-                    e.preventDefault(); // Impede a colagem normal
-                    // Filtra números válidos (1-60)
-                    let validNums = numbers.map(n => parseInt(n)).filter(n => n >= 1 && n <= 60);
+                // Filtra apenas números válidos entre 1 e 60
+                let validNums = numbers.map(n => parseInt(n)).filter(n => !isNaN(n) && n >= 1 && n <= 60);
 
-                    // Distribui nos inputs
+                // Distribui nos inputs
+                if (validNums.length > 0) {
                     inputs.forEach((inp, index) => {
                         if (validNums[index] !== undefined) {
                             inp.value = validNums[index];
+                        } else {
+                            inp.value = ''; // Limpa se não tiver número
                         }
                     });
+                    // Tenta conferir automaticamente se tiver 6 números
+                    if(validNums.length >= 6) {
+                        setTimeout(conferirManual, 300);
+                    }
                 }
             });
         });
