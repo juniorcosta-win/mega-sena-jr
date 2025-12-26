@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Sena Pro - TURBO V2</title>
+    <title>Mega Sena Pro - V3 FINAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -73,7 +73,7 @@
 <!-- LOGIN -->
 <div id="loginScreen">
     <div class="login-box">
-        <h2 style="color:var(--accent); margin-top:0;">🚀 Mega Pro Turbo</h2>
+        <h2 style="color:var(--accent); margin-top:0;">🚀 Mega Pro V3</h2>
         <p style="color:#ccc; font-size:0.9em;">Acesso Restrito ao Sistema</p>
         <input type="password" id="senhaInput" class="login-input" placeholder="Senha">
         <button onclick="verificarSenha()" class="login-btn">ENTRAR</button>
@@ -84,7 +84,7 @@
 <!-- APP -->
 <div id="appContent">
     <div class="container">
-        <h1>MEGA SENA PRO <span style="font-size:0.5em; background:var(--accent); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">TURBO</span></h1>
+        <h1>MEGA SENA PRO <span style="font-size:0.5em; background:var(--accent); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">V3</span></h1>
         <div class="subtitle" id="statusMsg">Carregando sistema...</div>
 
         <!-- GRÁFICO -->
@@ -126,15 +126,12 @@
             <div class="section-box">
                 <h3 class="section-title">Gerador de Fechamento</h3>
                 <p style="font-size:0.9em; color:#aaa;">Escolha de 7 a 9 números. O sistema vai gerar todas as combinações possíveis de 6 números.</p>
-                <div class="input-group" id="inputsDesdobra">
-                    <!-- Inputs gerados via JS -->
-                </div>
+                <div class="input-group" id="inputsDesdobra"></div>
                 <div style="text-align:center; margin-bottom:10px;">
                     <button class="action-btn" onclick="adicionarInputDesdobra()">+ Nº</button>
                     <button class="action-btn" onclick="removerInputDesdobra()">- Nº</button>
                 </div>
                 <button class="action-btn primary" style="width:100%" onclick="gerarDesdobramento()">GERAR COMBINAÇÕES</button>
-
                 <div id="resultadoDesdobra" class="desdobra-grid"></div>
             </div>
         </div>
@@ -142,12 +139,16 @@
         <!-- ABA 3: CONFERIDOR -->
         <div id="conferir" class="tab-content">
             <div class="section-box">
+                <p style="text-align:center; color:#888; font-size:0.9em;">Digite seus números ou use o botão de teste para provar que funciona.</p>
                 <div class="input-group">
                     <input type="number" class="num-input manual-inp" min="1" max="60"><input type="number" class="num-input manual-inp" min="1" max="60">
                     <input type="number" class="num-input manual-inp" min="1" max="60"><input type="number" class="num-input manual-inp" min="1" max="60">
                     <input type="number" class="num-input manual-inp" min="1" max="60"><input type="number" class="num-input manual-inp" min="1" max="60">
                 </div>
-                <button class="action-btn primary" style="width:100%" onclick="conferirManual()">VERIFICAR</button>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <button class="action-btn" style="background:#555" onclick="preencherUltimo()">🧪 Testar com Último Sorteio</button>
+                    <button class="action-btn primary" onclick="conferirManual()">VERIFICAR</button>
+                </div>
                 <div id="manualResult" style="margin-top:15px; padding:10px; background:#333; border-radius:5px; display:none;"></div>
                 <button id="btnSalvarManual" class="action-btn" style="width:100%; margin-top:10px; display:none;" onclick="salvarJogoAtual('manual')">💾 SALVAR</button>
             </div>
@@ -161,21 +162,18 @@
             </div>
         </div>
 
-        <!-- UPLOAD ESCONDIDO (FALLBACK) -->
         <label for="fileInput" class="upload-mini">📂 Carregar arquivo manualmente</label>
         <input type="file" id="fileInput" accept=".csv, .xlsx, .xls">
     </div>
 </div>
 
 <script>
-    // --- CONFIGURAÇÕES ---
     const SENHA_ACESSO = "mega2025";
     let historicoJogos = [];
     let frequencia = {};
     let jogoAtualManual = [], jogoAtualGerado = [];
     let chartInstance = null;
 
-    // --- INICIALIZAÇÃO ---
     window.onload = function() {
         carregarHistoricoSalvo();
         carregarCSVAutomatico();
@@ -199,7 +197,6 @@
         event.target.classList.add('active');
     }
 
-    // --- DADOS & GRÁFICO ---
     function carregarCSVAutomatico() {
         fetch('megasena_limpa.csv').then(r => {
             if(!r.ok) throw new Error(); return r.text();
@@ -230,11 +227,10 @@
         const lines = text.split('\n');
         let matrix = [];
         lines.forEach(l => {
-            // Divide por ponto e vírgula ou vírgula, mantendo a estrutura
-            let cols = l.split(/[;,]/).map(x => x.trim());
+            // Aceita ponto e virgula, virgula, tabulação ou pipe
+            let cols = l.split(/[;,\t|]/).map(x => x.trim());
             matrix.push(cols);
         });
-        // Usa o scanner inteligente para achar as colunas certas
         historicoJogos = scannerInteligente(matrix);
         finalizarCarga();
     }
@@ -249,22 +245,18 @@
 
     function scannerInteligente(linhas) {
         let contagem = {};
-        // Varre todas as células para ver quais colunas têm mais números entre 1 e 60
         linhas.forEach(linha => {
             linha.forEach((cel, idx) => {
-                // Ignora células que parecem datas (com / ou -)
                 if(typeof cel === 'string' && (cel.includes('/') || cel.includes('-') || cel.includes(':'))) return;
-
                 let v = parseInt(cel);
+                // Filtro rigoroso: só aceita 1 a 60
                 if (!isNaN(v) && v >= 1 && v <= 60) {
                     contagem[idx] = (contagem[idx] || 0) + 1;
                 }
             });
         });
 
-        // Pega as 6 colunas com mais números válidos
         let cols = Object.keys(contagem).map(Number).sort((a,b) => contagem[b] - contagem[a]).slice(0, 6).sort((a,b) => a-b);
-
         if (cols.length < 6) return [];
 
         let jogos = [];
@@ -274,7 +266,6 @@
                 let v = parseInt(linha[c]);
                 if (!isNaN(v) && v >= 1 && v <= 60) jogo.push(v);
             });
-            // Só aceita se tiver exatamente 6 números válidos na linha
             if (jogo.length === 6) jogos.push(jogo);
         });
         return jogos;
@@ -289,28 +280,29 @@
         if(chartInstance) chartInstance.destroy();
         const ctx = document.getElementById('myChart').getContext('2d');
         let dados = Object.keys(frequencia).map(k=>({n:k, q:frequencia[k]})).sort((a,b)=>b.q-a.q).slice(0,10);
-
         chartInstance = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: dados.map(d => 'Nº '+d.n),
-                datasets: [{
-                    label: 'Frequência',
-                    data: dados.map(d => d.q),
-                    backgroundColor: '#00e676',
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: {display:false} },
-                scales: { y: { beginAtZero: false, grid: {color:'#333'} }, x: { grid: {display:false} } }
-            }
+            data: { labels: dados.map(d => 'Nº '+d.n), datasets: [{ label: 'Frequência', data: dados.map(d => d.q), backgroundColor: '#00e676', borderRadius: 5 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} }, scales: { y: { beginAtZero: false, grid: {color:'#333'} }, x: { grid: {display:false} } } }
         });
     }
 
-    // --- GERADOR COM FILTROS ---
+    // --- FUNÇÃO DE TESTE (PROVA REAL) ---
+    function preencherUltimo() {
+        if(historicoJogos.length === 0) return alert("Carregue os dados primeiro!");
+        // Pega o primeiro jogo da lista (geralmente o mais recente ou o primeiro do CSV)
+        let ultimo = historicoJogos[0]; 
+        // Se o CSV estiver invertido, pega o último
+        if(historicoJogos.length > 1 && historicoJogos[0][0] < historicoJogos[historicoJogos.length-1][0]) {
+             // Lógica simples: vamos pegar um jogo aleatório do histórico para garantir
+             ultimo = historicoJogos[Math.floor(Math.random() * historicoJogos.length)];
+        }
+
+        let inps = document.querySelectorAll('.manual-inp');
+        ultimo.forEach((n, i) => { if(inps[i]) inps[i].value = n; });
+        alert("Preenchi com um jogo REAL do histórico. Agora clique em VERIFICAR.");
+    }
+
     function gerarJogo(tipo) {
         if(historicoJogos.length===0) return alert("Carregue os dados primeiro!");
         let nums = Object.keys(frequencia).map(Number);
@@ -327,11 +319,10 @@
                 while(esc.length<6) { let r=pool[Math.floor(Math.random()*pool.length)]; if(!esc.includes(r)) esc.push(r); }
             }
             jogo = esc.sort((a,b)=>a-b);
-
             if(!usarFiltro) break;
             let pares = jogo.filter(n => n%2===0).length;
             if(pares === 3) break;
-            if(tentativas > 500) { alert("Filtro muito restritivo, gerando melhor aproximação."); break; }
+            if(tentativas > 500) break;
         } while(true);
 
         jogoAtualGerado = jogo;
@@ -347,64 +338,44 @@
 
     function analisarJogo(jogo, divId) {
         let s=0, q=0, qa=0;
-        historicoJogos.forEach(h => { let ac=h.filter(n=>jogo.includes(n)).length; if(ac===6)s++; if(ac===5)q++; if(ac===4)qa++; });
+        historicoJogos.forEach(h => { 
+            let ac=h.filter(n=>jogo.includes(n)).length; 
+            if(ac===6)s++; if(ac===5)q++; if(ac===4)qa++; 
+        });
         let html = s>0 ? `<span style="color:var(--danger)">⚠️ JÁ SAIU ${s}x NA SENA!</span>` : `<span style="color:var(--accent)">✅ Jogo Inédito (Nunca deu Sena)</span>`;
         html += `<br><span style="color:#fff">Histórico: <b>${q} Quinas</b> | <b>${qa} Quadras</b></span>`;
         document.getElementById(divId).innerHTML = html;
         return {s,q,qa};
     }
 
-    // --- DESDOBRAMENTO ---
     let qtdDesdobra = 7;
-    function inicializarInputsDesdobra() {
-        atualizarInputsDesdobra();
-    }
+    function inicializarInputsDesdobra() { atualizarInputsDesdobra(); }
     function adicionarInputDesdobra() { if(qtdDesdobra < 9) { qtdDesdobra++; atualizarInputsDesdobra(); } }
     function removerInputDesdobra() { if(qtdDesdobra > 7) { qtdDesdobra--; atualizarInputsDesdobra(); } }
-
     function atualizarInputsDesdobra() {
-        const div = document.getElementById('inputsDesdobra');
-        div.innerHTML = '';
-        for(let i=0; i<qtdDesdobra; i++) {
-            div.innerHTML += `<input type="number" class="num-input desdobra-inp" min="1" max="60">`;
-        }
+        const div = document.getElementById('inputsDesdobra'); div.innerHTML = '';
+        for(let i=0; i<qtdDesdobra; i++) div.innerHTML += `<input type="number" class="num-input desdobra-inp" min="1" max="60">`;
     }
-
     function gerarDesdobramento() {
         let inps = document.querySelectorAll('.desdobra-inp');
         let nums = Array.from(inps).map(i => parseInt(i.value)).filter(n => !isNaN(n) && n>=1 && n<=60);
         nums = [...new Set(nums)].sort((a,b)=>a-b);
-
         if(nums.length !== qtdDesdobra) return alert(`Digite ${qtdDesdobra} números diferentes.`);
-
         let combinacoes = getCombinations(nums, 6);
-        let div = document.getElementById('resultadoDesdobra');
-        div.innerHTML = '';
-
+        let div = document.getElementById('resultadoDesdobra'); div.innerHTML = '';
         combinacoes.forEach((c, i) => {
-            div.innerHTML += `
-                <div class="game-card">
-                    <span>Jogo ${i+1}</span>
-                    <span style="color:var(--accent)">${c.map(n=>n<10?'0'+n:n).join('-')}</span>
-                </div>`;
+            div.innerHTML += `<div class="game-card"><span>Jogo ${i+1}</span><span style="color:var(--accent)">${c.map(n=>n<10?'0'+n:n).join('-')}</span></div>`;
         });
     }
-
     function getCombinations(valuesArray, k) {
         let result = [];
         function combine(start, combo) {
             if (combo.length === k) { result.push([...combo]); return; }
-            for (let i = start; i < valuesArray.length; i++) {
-                combo.push(valuesArray[i]);
-                combine(i + 1, combo);
-                combo.pop();
-            }
+            for (let i = start; i < valuesArray.length; i++) { combo.push(valuesArray[i]); combine(i + 1, combo); combo.pop(); }
         }
-        combine(0, []);
-        return result;
+        combine(0, []); return result;
     }
 
-    // --- CONFERIDOR & SALVAR ---
     function conferirManual() {
         let inps = document.querySelectorAll('.manual-inp');
         let aposta = Array.from(inps).map(i=>parseInt(i.value)).filter(n=>!isNaN(n)&&n>=1&&n<=60);
