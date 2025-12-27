@@ -6,24 +6,19 @@
     <title>Mega Sena Pro - V5 FINAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #00e676; --accent-hover: #00c853; --input-bg: #333; --danger: #ff5252; }
         body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-
         /* LOGIN */
-        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; } 
         .login-box { background: var(--card); padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #333; width: 90%; max-width: 350px; }
         .login-input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 5px; border: 1px solid #555; background: #222; color: white; font-size: 1.1em; text-align: center; box-sizing: border-box; }
         .login-btn { width: 100%; padding: 12px; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1.1em; text-transform: uppercase; }
-
         /* APP */
         #appContent { display: none; width: 100%; padding: 20px; box-sizing: border-box; flex-direction: column; align-items: center; }
         .container { max-width: 900px; width: 100%; background: var(--card); padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
         h1 { text-align: center; color: var(--accent); margin: 5px 0; letter-spacing: 1px; }
         .subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 0.9em; }
-
         /* ABAS */
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn { background: #333; color: #aaa; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
@@ -31,45 +26,35 @@
         .tab-content { display: none; animation: fadeIn 0.5s; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         /* SEÇÕES */
         .section-box { background: #252525; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
         .section-title { color: var(--accent); margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; }
-
         /* INPUTS & BOTÕES */
         .input-group { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .num-input { width: 45px; height: 45px; font-size: 1.2em; text-align: center; border-radius: 10px; border: 2px solid #444; background: var(--input-bg); color: white; font-weight: bold; transition: 0.2s; }
         .num-input:focus { border-color: var(--accent); outline: none; }
-
         .action-btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; background: #444; color: white; transition: 0.2s; flex: 1; min-width: 120px; }
         .action-btn:hover { background: #555; }
         .action-btn.primary { background: var(--accent); color: #000; }
         .action-btn.primary:hover { background: var(--accent-hover); }
-
         /* RESULTADOS */
         .result-display { display: flex; justify-content: center; gap: 8px; min-height: 60px; margin-top: 15px; flex-wrap: wrap; }
         .ball { width: 42px; height: 42px; background: linear-gradient(145deg, #00e676, #008c4a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; box-shadow: 0 4px 10px rgba(0,230,118,0.3); font-size: 1.1em; }
-
         /* GRÁFICO */
         .chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 20px; }
-
         /* DESDOBRAMENTO */
         .desdobra-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 15px; }
         .game-card { background: #333; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 1.1em; border-left: 3px solid var(--accent); }
-
         /* HISTÓRICO */
         .history-list { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
         .history-item { background: #333; margin-bottom: 5px; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; }
-
         /* FILTROS */
         .filter-option { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; background: #333; padding: 10px; border-radius: 8px; }
         input[type="checkbox"] { transform: scale(1.5); accent-color: var(--accent); }
-
         .upload-mini { font-size: 0.8em; color: #666; text-align: center; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
-
 <!-- LOGIN -->
 <div id="loginScreen">
     <div class="login-box">
@@ -80,13 +65,11 @@
         <p id="msgErro" style="color:var(--danger); display:none; margin-top:10px;">Senha incorreta!</p>
     </div>
 </div>
-
 <!-- APP -->
 <div id="appContent">
     <div class="container">
         <h1>MEGA SENA PRO <span style="font-size:0.5em; background:var(--accent); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">V5</span></h1>
         <div class="subtitle" id="statusMsg">Carregando sistema...</div>
-
         <!-- GRÁFICO -->
         <div class="section-box">
             <h3 class="section-title">📊 Tendência dos Números (Top 10)</h3>
@@ -94,7 +77,6 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
-
         <!-- NAVEGAÇÃO -->
         <div class="tabs">
             <button class="tab-btn active" onclick="mudarAba('gerador')">🎲 Gerador Inteligente</button>
@@ -102,7 +84,6 @@
             <button class="tab-btn" onclick="mudarAba('conferir')">🔍 Conferidor</button>
             <button class="tab-btn" onclick="mudarAba('historico')">📜 Histórico</button>
         </div>
-
         <!-- ABA 1: GERADOR -->
         <div id="gerador" class="tab-content active">
             <div class="section-box">
@@ -120,7 +101,6 @@
                 <button id="btnSalvarGerado" class="action-btn primary" style="width:100%; margin-top:15px; display:none;" onclick="salvarJogoAtual('gerado')">💾 SALVAR JOGO</button>
             </div>
         </div>
-
         <!-- ABA 2: DESDOBRAMENTO -->
         <div id="desdobra" class="tab-content">
             <div class="section-box">
@@ -135,7 +115,6 @@
                 <div id="resultadoDesdobra" class="desdobra-grid"></div>
             </div>
         </div>
-
         <!-- ABA 3: CONFERIDOR -->
         <div id="conferir" class="tab-content">
             <div class="section-box">
@@ -151,11 +130,10 @@
                     <button class="action-btn" style="background:#555" onclick="preencherUltimo()">🧪 Testar com Último Sorteio</button>
                     <button class="action-btn primary" onclick="conferirManual()">VERIFICAR</button>
                 </div>
-                <div id="manualResult" style="margin-top:15px; padding:10px; background:#333; border-radius:5px; display:none;"></div>
+                <div id="manualResult" style="margin-top:15px; padding:15px; background:#333; border-radius:5px; display:none; text-align:center; font-size:1.1em;"></div>
                 <button id="btnSalvarManual" class="action-btn" style="width:100%; margin-top:10px; display:none;" onclick="salvarJogoAtual('manual')">💾 SALVAR</button>
             </div>
         </div>
-
         <!-- ABA 4: HISTÓRICO -->
         <div id="historico" class="tab-content">
             <div class="section-box">
@@ -163,12 +141,10 @@
                 <button onclick="limparHistorico()" style="background:none; color:#666; border:none; width:100%; cursor:pointer; margin-top:10px;">Limpar Histórico</button>
             </div>
         </div>
-
         <label for="fileInput" class="upload-mini">📂 Carregar arquivo manualmente</label>
-        <input type="file" id="fileInput" accept=".csv, .xlsx, .xls">
+        <input type="file" id="fileInput" accept=".csv, .xlsx, .xls" style="display:none;">
     </div>
 </div>
-
 <script>
     const SENHA_ACESSO = "mega2025";
     let historicoJogos = [];
@@ -200,30 +176,22 @@
         event.target.classList.add('active');
     }
 
-    // --- COLAGEM MÁGICA V5 (CORRIGIDA) ---
     function ativarColagemMagica() {
         const inputs = document.querySelectorAll('.manual-inp');
         inputs.forEach(input => {
             input.addEventListener('paste', (e) => {
-                e.preventDefault(); // BLOQUEIA A COLAGEM PADRÃO
-
+                e.preventDefault();
                 let paste = (e.clipboardData || window.clipboardData).getData('text');
-                // Separa por qualquer coisa que não seja número (espaço, virgula, traço, tab)
                 let numbers = paste.split(/[\D]+/).filter(n => n.trim() !== '');
-
-                // Filtra apenas números válidos entre 1 e 60
                 let validNums = numbers.map(n => parseInt(n)).filter(n => !isNaN(n) && n >= 1 && n <= 60);
-
-                // Distribui nos inputs
                 if (validNums.length > 0) {
                     inputs.forEach((inp, index) => {
                         if (validNums[index] !== undefined) {
                             inp.value = validNums[index];
                         } else {
-                            inp.value = ''; // Limpa se não tiver número
+                            inp.value = '';
                         }
                     });
-                    // Tenta conferir automaticamente se tiver 6 números
                     if(validNums.length >= 6) {
                         setTimeout(conferirManual, 300);
                     }
@@ -288,10 +256,8 @@
                 }
             });
         });
-
         let cols = Object.keys(contagem).map(Number).sort((a,b) => contagem[b] - contagem[a]).slice(0, 6).sort((a,b) => a-b);
         if (cols.length < 6) return [];
-
         let jogos = [];
         linhas.forEach(linha => {
             let jogo = [];
@@ -324,7 +290,7 @@
         if(historicoJogos.length === 0) return alert("Carregue os dados primeiro!");
         let ultimo = historicoJogos[0]; 
         if(historicoJogos.length > 1 && historicoJogos[0][0] < historicoJogos[historicoJogos.length-1][0]) {
-             ultimo = historicoJogos[Math.floor(Math.random() * historicoJogos.length)];
+            ultimo = historicoJogos[Math.floor(Math.random() * historicoJogos.length)];
         }
         let inps = document.querySelectorAll('.manual-inp');
         ultimo.forEach((n, i) => { if(inps[i]) inps[i].value = n; });
@@ -337,7 +303,6 @@
         let tentativas = 0;
         let jogo = [];
         const usarFiltro = document.getElementById('filtroParImpar').checked;
-
         do {
             tentativas++;
             let esc = [];
@@ -352,7 +317,6 @@
             if(pares === 3) break;
             if(tentativas > 500) break;
         } while(true);
-
         jogoAtualGerado = jogo;
         exibirResultado(jogo, 'resultadoGerador');
         analisarJogo(jogo, 'analiseGerador');
@@ -364,16 +328,22 @@
         div.innerHTML = nums.map(n => `<div class="ball">${n<10?'0'+n:n}</div>`).join('');
     }
 
+    // ========== FUNÇÃO SIMPLIFICADA: APENAS SENA ==========
     function analisarJogo(jogo, divId) {
-        let s=0, q=0, qa=0;
-        historicoJogos.forEach(h => { 
-            let ac=h.filter(n=>jogo.includes(n)).length; 
-            if(ac===6)s++; if(ac===5)q++; if(ac===4)qa++; 
+        let senas = 0;
+
+        historicoJogos.forEach((h, index) => { 
+            let acertos = h.filter(n => jogo.includes(n)).length;
+            if(acertos === 6) senas++;
         });
-        let html = s>0 ? `<span style="color:var(--danger)">⚠️ JÁ SAIU ${s}x NA SENA!</span>` : `<span style="color:var(--accent)">✅ Jogo Inédito (Nunca deu Sena)</span>`;
-        html += `<br><span style="color:#fff">Histórico: <b>${q} Quinas</b> | <b>${qa} Quadras</b></span>`;
+
+        let html = senas > 0 
+            ? `<span style="color:var(--danger); font-size:1.3em;">⚠️ ESSE JOGO JÁ SAIU ${senas}x NA SENA!</span><br><small style="color:#888;">Não é recomendado jogar números que já ganharam</small>` 
+            : `<span style="color:var(--accent); font-size:1.3em;">✅ JOGO INÉDITO!</span><br><small style="color:#aaa;">Esse jogo nunca ganhou a Sena</small>`;
+
         document.getElementById(divId).innerHTML = html;
-        return {s,q,qa};
+
+        return {senas};
     }
 
     let qtdDesdobra = 7;
@@ -403,18 +373,16 @@
         }
         combine(0, []); return result;
     }
-
     function conferirManual() {
         let inps = document.querySelectorAll('.manual-inp');
         let aposta = Array.from(inps).map(i=>parseInt(i.value)).filter(n=>!isNaN(n)&&n>=1&&n<=60);
         aposta = [...new Set(aposta)].sort((a,b)=>a-b);
         if(aposta.length!==6) return alert("Digite 6 números válidos.");
         jogoAtualManual = aposta;
-        let res = analisarJogo(aposta, 'manualResult');
+        analisarJogo(aposta, 'manualResult');
         document.getElementById('manualResult').style.display = 'block';
         document.getElementById('btnSalvarManual').style.display = 'block';
     }
-
     function salvarJogoAtual(origem) {
         let j = origem==='manual'?jogoAtualManual:jogoAtualGerado;
         if(!j || j.length!==6) return;
@@ -425,7 +393,6 @@
         carregarHistoricoSalvo();
         alert("Salvo!");
     }
-
     function carregarHistoricoSalvo() {
         let h = JSON.parse(localStorage.getItem('meusJogosMega'))||[], l = document.getElementById('listaHistorico'); l.innerHTML='';
         if(h.length===0) l.innerHTML='<li style="color:#666;text-align:center">Vazio</li>';
