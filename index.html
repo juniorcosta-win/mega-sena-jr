@@ -79,6 +79,11 @@
         td { padding: 8px; text-align: center; border-bottom: 1px solid #333; }
         .tabela-scroll { max-height: 400px; overflow-y: auto; }
 
+        /* DETALHES QUINAS/QUADRAS */
+        .acertos-box { background: #2a2a2a; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .acerto-title { color: var(--accent); font-weight: bold; margin-bottom: 10px; }
+        .acerto-count { font-size: 1.1em; margin-bottom: 10px; }
+
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
             .tab-btn { font-size: 0.8em; padding: 8px 15px; }
@@ -134,7 +139,7 @@
                     <button class="action-btn" onclick="gerarJogo('surpresa')">❓ Surpresa</button>
                 </div>
                 <div id="resultadoGerador" class="result-display"></div>
-                <div id="analiseGerador" style="text-align:center; margin-top:15px; color:#ccc; font-size:0.9em;"></div>
+                <div id="analiseGerador" style="text-align:center; margin-top:15px;"></div>
                 <button id="btnSalvarGerado" class="action-btn primary" style="width:100%; margin-top:15px; display:none;" onclick="salvarJogoAtual('gerado')">💾 SALVAR JOGO</button>
             </div>
         </div>
@@ -169,7 +174,7 @@
                     <button class="action-btn" style="background:#555" onclick="preencherUltimo()">🧪 Testar Aleatório</button>
                     <button class="action-btn primary" onclick="conferirManual()">VERIFICAR</button>
                 </div>
-                <div id="manualResult" style="margin-top:15px; padding:15px; background:#333; border-radius:5px; display:none; text-align:center; font-size:1.1em;"></div>
+                <div id="manualResult" style="margin-top:15px; padding:15px; background:#333; border-radius:5px; display:none;"></div>
                 <button id="btnSalvarManual" class="action-btn" style="width:100%; margin-top:10px; display:none;" onclick="salvarJogoAtual('manual')">💾 SALVAR</button>
             </div>
         </div>
@@ -529,19 +534,42 @@
         div.innerHTML = nums.map(n => `<div class="ball">${n<10?'0'+n:n}</div>`).join('');
     }
 
+    // ========== FUNÇÃO ATUALIZADA: COM QUINA E QUADRA ==========
     function analisarJogo(jogo, divId) {
-        let senas = 0;
+        let senas = 0, quinas = 0, quadras = 0;
+
         historicoJogos.forEach((h) => { 
             let acertos = h.filter(n => jogo.includes(n)).length;
             if(acertos === 6) senas++;
+            if(acertos === 5) quinas++;
+            if(acertos === 4) quadras++;
         });
 
+        // Mensagem principal (Sena)
         let html = senas > 0 
-            ? `<span style="color:var(--danger); font-size:1.3em;">⚠️ JÁ SAIU ${senas}x NA SENA!</span><br><small style="color:#888;">Não recomendado</small>` 
-            : `<span style="color:var(--accent); font-size:1.3em;">✅ JOGO INÉDITO!</span><br><small style="color:#aaa;">Nunca ganhou a Sena</small>`;
+            ? `<div style="color:var(--danger); font-size:1.3em; margin-bottom:10px;">⚠️ JÁ SAIU ${senas}x NA SENA!</div>` 
+            : `<div style="color:var(--accent); font-size:1.3em; margin-bottom:10px;">✅ JOGO INÉDITO!</div>`;
+
+        // Box de acertos (Quina e Quadra)
+        html += `<div class="acertos-box">`;
+        html += `<div class="acerto-title">📊 Histórico de Acertos:</div>`;
+
+        // Quinas
+        html += `<div class="acerto-count" style="color:#00e676;">`;
+        html += `<strong>${quinas} Quinas</strong> encontradas`;
+        if(quinas === 0) html += ` <span style="color:#666;">(Nenhuma vez com 5 acertos)</span>`;
+        html += `</div>`;
+
+        // Quadras
+        html += `<div class="acerto-count" style="color:#ffb300;">`;
+        html += `<strong>${quadras} Quadras</strong> encontradas`;
+        if(quadras === 0) html += ` <span style="color:#666;">(Nenhuma vez com 4 acertos)</span>`;
+        html += `</div>`;
+
+        html += `</div>`;
 
         document.getElementById(divId).innerHTML = html;
-        return {senas};
+        return {senas, quinas, quadras};
     }
 
     let qtdDesdobra = 7;
