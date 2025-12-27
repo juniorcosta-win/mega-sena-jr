@@ -9,26 +9,31 @@
     <style>
         :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #00e676; --accent-hover: #00c853; --input-bg: #333; --danger: #ff5252; }
         body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+
         /* LOGIN */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; } 
         .login-box { background: var(--card); padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #333; width: 90%; max-width: 350px; }
         .login-input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 5px; border: 1px solid #555; background: #222; color: white; font-size: 1.1em; text-align: center; box-sizing: border-box; }
         .login-btn { width: 100%; padding: 12px; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1.1em; text-transform: uppercase; }
+
         /* APP */
         #appContent { display: none; width: 100%; padding: 20px; box-sizing: border-box; flex-direction: column; align-items: center; }
         .container { max-width: 900px; width: 100%; background: var(--card); padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         h1 { text-align: center; color: var(--accent); margin: 5px 0; letter-spacing: 1px; }
         .subtitle { text-align: center; color: #888; margin-bottom: 20px; font-size: 0.9em; }
+
         /* ABAS */
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { background: #333; color: #aaa; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .tab-btn { background: #333; color: #aaa; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.9em; }
         .tab-btn.active { background: var(--accent); color: #000; }
         .tab-content { display: none; animation: fadeIn 0.5s; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         /* SEÇÕES */
         .section-box { background: #252525; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
         .section-title { color: var(--accent); margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px; }
+
         /* INPUTS & BOTÕES */
         .input-group { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .num-input { width: 45px; height: 45px; font-size: 1.2em; text-align: center; border-radius: 10px; border: 2px solid #444; background: var(--input-bg); color: white; font-weight: bold; transition: 0.2s; }
@@ -37,39 +42,68 @@
         .action-btn:hover { background: #555; }
         .action-btn.primary { background: var(--accent); color: #000; }
         .action-btn.primary:hover { background: var(--accent-hover); }
+
         /* RESULTADOS */
         .result-display { display: flex; justify-content: center; gap: 8px; min-height: 60px; margin-top: 15px; flex-wrap: wrap; }
         .ball { width: 42px; height: 42px; background: linear-gradient(145deg, #00e676, #008c4a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; box-shadow: 0 4px 10px rgba(0,230,118,0.3); font-size: 1.1em; }
+
         /* GRÁFICO */
         .chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 20px; }
+
         /* DESDOBRAMENTO */
         .desdobra-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 15px; }
         .game-card { background: #333; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 1.1em; border-left: 3px solid var(--accent); }
+
         /* HISTÓRICO */
         .history-list { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
         .history-item { background: #333; margin-bottom: 5px; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; }
+
         /* FILTROS */
-        .filter-option { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; background: #333; padding: 10px; border-radius: 8px; }
+        .filter-option { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; background: #333; padding: 10px; border-radius: 8px; flex-wrap: wrap; font-size: 0.9em; }
         input[type="checkbox"] { transform: scale(1.5); accent-color: var(--accent); }
         .upload-mini { font-size: 0.8em; color: #666; text-align: center; margin-top: 10px; cursor: pointer; }
+
+        /* ESTATÍSTICAS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: #2a2a2a; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid var(--accent); transition: 0.2s; }
+        .stat-card.frio { border-left-color: #5599ff; }
+        .stat-card:hover { transform: translateY(-3px); background: #333; }
+        .stat-numero { font-size: 2em; font-weight: bold; color: var(--accent); }
+        .stat-numero.frio { color: #5599ff; }
+        .stat-freq { color: #888; font-size: 0.85em; margin-top: 5px; }
+        .stat-prob { font-weight: bold; margin-top: 3px; }
+
+        table { width: 100%; border-collapse: collapse; font-family: monospace; font-size: 0.9em; }
+        thead { position: sticky; top: 0; background: #1e1e1e; border-bottom: 2px solid var(--accent); }
+        th { padding: 10px; text-align: center; color: var(--accent); }
+        td { padding: 8px; text-align: center; border-bottom: 1px solid #333; }
+        .tabela-scroll { max-height: 400px; overflow-y: auto; }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+            .tab-btn { font-size: 0.8em; padding: 8px 15px; }
+        }
     </style>
 </head>
 <body>
+
 <!-- LOGIN -->
 <div id="loginScreen">
     <div class="login-box">
         <h2 style="color:var(--accent); margin-top:0;">🚀 Mega Pro V5</h2>
         <p style="color:#ccc; font-size:0.9em;">Acesso Restrito ao Sistema</p>
-        <input type="password" id="senhaInput" class="login-input" placeholder="Senha">
+        <input type="password" id="senhaInput" class="login-input" placeholder="Senha" onkeypress="if(event.key==='Enter')verificarSenha()">
         <button onclick="verificarSenha()" class="login-btn">ENTRAR</button>
         <p id="msgErro" style="color:var(--danger); display:none; margin-top:10px;">Senha incorreta!</p>
     </div>
 </div>
+
 <!-- APP -->
 <div id="appContent">
     <div class="container">
         <h1>MEGA SENA PRO <span style="font-size:0.5em; background:var(--accent); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">V5</span></h1>
         <div class="subtitle" id="statusMsg">Carregando sistema...</div>
+
         <!-- GRÁFICO -->
         <div class="section-box">
             <h3 class="section-title">📊 Tendência dos Números (Top 10)</h3>
@@ -77,19 +111,22 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
+
         <!-- NAVEGAÇÃO -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="mudarAba('gerador')">🎲 Gerador Inteligente</button>
-            <button class="tab-btn" onclick="mudarAba('desdobra')">🔢 Desdobramento (Bolão)</button>
+            <button class="tab-btn active" onclick="mudarAba('gerador')">🎲 Gerador</button>
+            <button class="tab-btn" onclick="mudarAba('desdobra')">🔢 Desdobramento</button>
             <button class="tab-btn" onclick="mudarAba('conferir')">🔍 Conferidor</button>
+            <button class="tab-btn" onclick="mudarAba('estatisticas')">📊 Estatísticas</button>
             <button class="tab-btn" onclick="mudarAba('historico')">📜 Histórico</button>
         </div>
+
         <!-- ABA 1: GERADOR -->
         <div id="gerador" class="tab-content active">
             <div class="section-box">
                 <div class="filter-option">
                     <input type="checkbox" id="filtroParImpar">
-                    <label for="filtroParImpar"><b>Filtro Profissional:</b> Forçar 3 Pares e 3 Ímpares (Equilíbrio Perfeito)</label>
+                    <label for="filtroParImpar"><b>Filtro:</b> Forçar 3 Pares e 3 Ímpares</label>
                 </div>
                 <div class="input-group">
                     <button class="action-btn" onclick="gerarJogo('quente')">🔥 Quentes</button>
@@ -101,11 +138,12 @@
                 <button id="btnSalvarGerado" class="action-btn primary" style="width:100%; margin-top:15px; display:none;" onclick="salvarJogoAtual('gerado')">💾 SALVAR JOGO</button>
             </div>
         </div>
+
         <!-- ABA 2: DESDOBRAMENTO -->
         <div id="desdobra" class="tab-content">
             <div class="section-box">
                 <h3 class="section-title">Gerador de Fechamento</h3>
-                <p style="font-size:0.9em; color:#aaa;">Escolha de 7 a 9 números. O sistema vai gerar todas as combinações possíveis de 6 números.</p>
+                <p style="font-size:0.9em; color:#aaa;">Escolha de 7 a 9 números para gerar todas as combinações de 6.</p>
                 <div class="input-group" id="inputsDesdobra"></div>
                 <div style="text-align:center; margin-bottom:10px;">
                     <button class="action-btn" onclick="adicionarInputDesdobra()">+ Nº</button>
@@ -115,36 +153,72 @@
                 <div id="resultadoDesdobra" class="desdobra-grid"></div>
             </div>
         </div>
+
         <!-- ABA 3: CONFERIDOR -->
         <div id="conferir" class="tab-content">
             <div class="section-box">
                 <p style="text-align:center; color:#888; font-size:0.9em;">
-                    Dica: Copie seus 6 números e <b>cole</b> na primeira caixinha para preencher tudo!
+                    💡 Dica: Cole seus 6 números na primeira caixinha!
                 </p>
                 <div class="input-group">
                     <input type="number" class="num-input manual-inp" min="1" max="60"><input type="number" class="num-input manual-inp" min="1" max="60">
                     <input type="number" class="num-input manual-inp" min="1" max="60"><input type="number" class="num-input manual-inp" min="1" max="60">
                     <input type="number" class="num-input manual-inp" min="1" max="60"><input type="number" class="num-input manual-inp" min="1" max="60">
                 </div>
-                <div style="display:flex; gap:10px; margin-bottom:10px;">
-                    <button class="action-btn" style="background:#555" onclick="preencherUltimo()">🧪 Testar com Último Sorteio</button>
+                <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                    <button class="action-btn" style="background:#555" onclick="preencherUltimo()">🧪 Testar Aleatório</button>
                     <button class="action-btn primary" onclick="conferirManual()">VERIFICAR</button>
                 </div>
                 <div id="manualResult" style="margin-top:15px; padding:15px; background:#333; border-radius:5px; display:none; text-align:center; font-size:1.1em;"></div>
                 <button id="btnSalvarManual" class="action-btn" style="width:100%; margin-top:10px; display:none;" onclick="salvarJogoAtual('manual')">💾 SALVAR</button>
             </div>
         </div>
-        <!-- ABA 4: HISTÓRICO -->
+
+        <!-- ABA 4: ESTATÍSTICAS -->
+        <div id="estatisticas" class="tab-content">
+            <div class="section-box">
+                <h3 class="section-title">🔥 NÚMEROS MAIS SORTEADOS (Top 10)</h3>
+                <div id="numerosMaisFrequentes" class="stats-grid"></div>
+                <button class="action-btn primary" style="width:100%; margin-top:10px;" onclick="gerarComQuentes()">🎲 GERAR JOGO COM OS QUENTES</button>
+            </div>
+
+            <div class="section-box">
+                <h3 class="section-title">❄️ NÚMEROS MENOS SORTEADOS (Top 10)</h3>
+                <div id="numerosMenosFrequentes" class="stats-grid"></div>
+                <button class="action-btn primary" style="width:100%; margin-top:10px;" onclick="gerarComFrios()">🎲 GERAR JOGO COM OS FRIOS</button>
+            </div>
+
+            <div class="section-box">
+                <h3 class="section-title">⚖️ TABELA COMPLETA (Todos os 60 Números)</h3>
+                <div class="tabela-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Frequência</th>
+                                <th>Probabilidade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabela"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 5: HISTÓRICO -->
         <div id="historico" class="tab-content">
             <div class="section-box">
                 <ul id="listaHistorico" class="history-list"></ul>
                 <button onclick="limparHistorico()" style="background:none; color:#666; border:none; width:100%; cursor:pointer; margin-top:10px;">Limpar Histórico</button>
             </div>
         </div>
-        <label for="fileInput" class="upload-mini">📂 Carregar arquivo manualmente</label>
+
+        <label for="fileInput" class="upload-mini">📂 Carregar arquivo CSV manualmente</label>
         <input type="file" id="fileInput" accept=".csv, .xlsx, .xls" style="display:none;">
     </div>
 </div>
+
 <script>
     const SENHA_ACESSO = "mega2025";
     let historicoJogos = [];
@@ -163,7 +237,10 @@
         if(document.getElementById('senhaInput').value === SENHA_ACESSO) {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('appContent').style.display = 'flex';
-            if(historicoJogos.length > 0) renderizarGrafico();
+            if(historicoJogos.length > 0) {
+                renderizarGrafico();
+                analisarFrequencia();
+            }
         } else {
             document.getElementById('msgErro').style.display = 'block';
         }
@@ -186,15 +263,9 @@
                 let validNums = numbers.map(n => parseInt(n)).filter(n => !isNaN(n) && n >= 1 && n <= 60);
                 if (validNums.length > 0) {
                     inputs.forEach((inp, index) => {
-                        if (validNums[index] !== undefined) {
-                            inp.value = validNums[index];
-                        } else {
-                            inp.value = '';
-                        }
+                        inp.value = validNums[index] !== undefined ? validNums[index] : '';
                     });
-                    if(validNums.length >= 6) {
-                        setTimeout(conferirManual, 300);
-                    }
+                    if(validNums.length >= 6) setTimeout(conferirManual, 300);
                 }
             });
         });
@@ -202,17 +273,19 @@
 
     function carregarCSVAutomatico() {
         fetch('megasena_limpa.csv').then(r => {
-            if(!r.ok) throw new Error(); return r.text();
+            if(!r.ok) throw new Error(); 
+            return r.text();
         }).then(t => {
             processarCSVTexto(t);
-            document.getElementById('statusMsg').innerHTML = `<span style="color:var(--accent)">✅ Sistema Online e Atualizado</span>`;
+            document.getElementById('statusMsg').innerHTML = `<span style="color:var(--accent)">✅ Sistema Online</span>`;
         }).catch(() => {
-            document.getElementById('statusMsg').innerText = "⚠️ Modo Offline (Carregue o arquivo)";
+            document.getElementById('statusMsg').innerText = "⚠️ Carregue o CSV manualmente";
         });
     }
 
     document.getElementById('fileInput').addEventListener('change', function(e) {
-        const f = e.target.files[0]; if(!f) return;
+        const f = e.target.files[0]; 
+        if(!f) return;
         const r = new FileReader();
         r.onload = e => {
             try {
@@ -220,7 +293,9 @@
                 historicoJogos = scannerInteligente(XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]], {header:1}));
                 finalizarCarga();
             } catch {
-                const tr = new FileReader(); tr.onload = evt => processarCSVTexto(evt.target.result); tr.readAsText(f);
+                const tr = new FileReader(); 
+                tr.onload = evt => processarCSVTexto(evt.target.result); 
+                tr.readAsText(f);
             }
         };
         r.readAsArrayBuffer(f);
@@ -241,6 +316,7 @@
         if(historicoJogos.length > 0) {
             processarEstatisticas();
             renderizarGrafico();
+            analisarFrequencia();
             document.getElementById('statusMsg').innerHTML = `<span style="color:var(--accent)">✅ ${historicoJogos.length} Concursos Carregados</span>`;
         }
     }
@@ -271,7 +347,8 @@
     }
 
     function processarEstatisticas() {
-        frequencia = {}; for(let i=1;i<=60;i++) frequencia[i]=0;
+        frequencia = {}; 
+        for(let i=1;i<=60;i++) frequencia[i]=0;
         historicoJogos.forEach(j=>j.forEach(n=>frequencia[n]++));
     }
 
@@ -281,20 +358,134 @@
         let dados = Object.keys(frequencia).map(k=>({n:k, q:frequencia[k]})).sort((a,b)=>b.q-a.q).slice(0,10);
         chartInstance = new Chart(ctx, {
             type: 'bar',
-            data: { labels: dados.map(d => 'Nº '+d.n), datasets: [{ label: 'Frequência', data: dados.map(d => d.q), backgroundColor: '#00e676', borderRadius: 5 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} }, scales: { y: { beginAtZero: false, grid: {color:'#333'} }, x: { grid: {display:false} } } }
+            data: { 
+                labels: dados.map(d => 'Nº '+d.n), 
+                datasets: [{ 
+                    label: 'Frequência', 
+                    data: dados.map(d => d.q), 
+                    backgroundColor: '#00e676', 
+                    borderRadius: 5 
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { legend: {display:false} }, 
+                scales: { 
+                    y: { beginAtZero: false, grid: {color:'#333'} }, 
+                    x: { grid: {display:false} } 
+                } 
+            }
         });
+    }
+
+    function analisarFrequencia() {
+        if(historicoJogos.length === 0) return;
+
+        let totalSorteios = historicoJogos.length;
+        let dados = Object.keys(frequencia).map(n => ({
+            numero: parseInt(n),
+            vezes: frequencia[n],
+            prob: ((frequencia[n] / totalSorteios) * 100).toFixed(2)
+        }));
+
+        dados.sort((a, b) => b.vezes - a.vezes);
+
+        // QUENTES
+        let quentes = dados.slice(0, 10);
+        let divQuentes = document.getElementById('numerosMaisFrequentes');
+        divQuentes.innerHTML = '';
+        quentes.forEach(item => {
+            divQuentes.innerHTML += `
+                <div class="stat-card">
+                    <div class="stat-numero">${item.numero < 10 ? '0'+item.numero : item.numero}</div>
+                    <div class="stat-freq">Saiu ${item.vezes}x</div>
+                    <div class="stat-prob" style="color:var(--accent)">${item.prob}%</div>
+                </div>
+            `;
+        });
+
+        // FRIOS
+        let frios = dados.slice(-10).reverse();
+        let divFrios = document.getElementById('numerosMenosFrequentes');
+        divFrios.innerHTML = '';
+        frios.forEach(item => {
+            divFrios.innerHTML += `
+                <div class="stat-card frio">
+                    <div class="stat-numero frio">${item.numero < 10 ? '0'+item.numero : item.numero}</div>
+                    <div class="stat-freq">Saiu ${item.vezes}x</div>
+                    <div class="stat-prob" style="color:#5599ff">${item.prob}%</div>
+                </div>
+            `;
+        });
+
+        // TABELA COMPLETA
+        let tbody = document.getElementById('corpoTabela');
+        tbody.innerHTML = '';
+        let media = totalSorteios * 0.1;
+
+        dados.forEach(item => {
+            let status = '', cor = '';
+            if(item.vezes > media * 1.1) {
+                status = '🔥 Quente'; cor = 'var(--accent)';
+            } else if(item.vezes < media * 0.9) {
+                status = '❄️ Frio'; cor = '#5599ff';
+            } else {
+                status = '⚖️ Normal'; cor = '#888';
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td style="font-weight:bold; color:${cor};">${item.numero < 10 ? '0'+item.numero : item.numero}</td>
+                    <td>${item.vezes}</td>
+                    <td style="color:${cor};">${item.prob}%</td>
+                    <td>${status}</td>
+                </tr>
+            `;
+        });
+    }
+
+    function gerarComQuentes() {
+        if(historicoJogos.length === 0) return alert("Carregue os dados primeiro!");
+        let nums = Object.keys(frequencia).map(Number).sort((a,b) => frequencia[b] - frequencia[a]).slice(0, 15);
+        let jogo = [];
+        while(jogo.length < 6) {
+            let escolhido = nums[Math.floor(Math.random() * nums.length)];
+            if(!jogo.includes(escolhido)) jogo.push(escolhido);
+        }
+        jogo.sort((a,b) => a-b);
+        jogoAtualGerado = jogo;
+        mudarAba('gerador');
+        setTimeout(() => {
+            exibirResultado(jogo, 'resultadoGerador');
+            analisarJogo(jogo, 'analiseGerador');
+            document.getElementById('btnSalvarGerado').style.display = 'block';
+        }, 100);
+    }
+
+    function gerarComFrios() {
+        if(historicoJogos.length === 0) return alert("Carregue os dados primeiro!");
+        let nums = Object.keys(frequencia).map(Number).sort((a,b) => frequencia[a] - frequencia[b]).slice(0, 15);
+        let jogo = [];
+        while(jogo.length < 6) {
+            let escolhido = nums[Math.floor(Math.random() * nums.length)];
+            if(!jogo.includes(escolhido)) jogo.push(escolhido);
+        }
+        jogo.sort((a,b) => a-b);
+        jogoAtualGerado = jogo;
+        mudarAba('gerador');
+        setTimeout(() => {
+            exibirResultado(jogo, 'resultadoGerador');
+            analisarJogo(jogo, 'analiseGerador');
+            document.getElementById('btnSalvarGerado').style.display = 'block';
+        }, 100);
     }
 
     function preencherUltimo() {
         if(historicoJogos.length === 0) return alert("Carregue os dados primeiro!");
-        let ultimo = historicoJogos[0]; 
-        if(historicoJogos.length > 1 && historicoJogos[0][0] < historicoJogos[historicoJogos.length-1][0]) {
-            ultimo = historicoJogos[Math.floor(Math.random() * historicoJogos.length)];
-        }
+        let ultimo = historicoJogos[Math.floor(Math.random() * historicoJogos.length)];
         let inps = document.querySelectorAll('.manual-inp');
         ultimo.forEach((n, i) => { if(inps[i]) inps[i].value = n; });
-        alert("Preenchi com um jogo REAL do histórico. Agora clique em VERIFICAR.");
     }
 
     function gerarJogo(tipo) {
@@ -303,13 +494,22 @@
         let tentativas = 0;
         let jogo = [];
         const usarFiltro = document.getElementById('filtroParImpar').checked;
+
         do {
             tentativas++;
             let esc = [];
-            if(tipo==='surpresa') esc = nums.sort(()=>0.5-Math.random()).slice(0,6);
-            else {
-                let pool=[]; nums.forEach(n=>{ let p=tipo==='quente'?frequencia[n]:(1000-frequencia[n]); for(let i=0;i<Math.ceil(p/10);i++) pool.push(n); });
-                while(esc.length<6) { let r=pool[Math.floor(Math.random()*pool.length)]; if(!esc.includes(r)) esc.push(r); }
+            if(tipo==='surpresa') {
+                esc = nums.sort(()=>0.5-Math.random()).slice(0,6);
+            } else {
+                let pool=[]; 
+                nums.forEach(n=>{ 
+                    let p=tipo==='quente'?frequencia[n]:(1000-frequencia[n]); 
+                    for(let i=0;i<Math.ceil(p/10);i++) pool.push(n); 
+                });
+                while(esc.length<6) { 
+                    let r=pool[Math.floor(Math.random()*pool.length)]; 
+                    if(!esc.includes(r)) esc.push(r); 
+                }
             }
             jogo = esc.sort((a,b)=>a-b);
             if(!usarFiltro) break;
@@ -317,6 +517,7 @@
             if(pares === 3) break;
             if(tentativas > 500) break;
         } while(true);
+
         jogoAtualGerado = jogo;
         exibirResultado(jogo, 'resultadoGerador');
         analisarJogo(jogo, 'analiseGerador');
@@ -328,21 +529,18 @@
         div.innerHTML = nums.map(n => `<div class="ball">${n<10?'0'+n:n}</div>`).join('');
     }
 
-    // ========== FUNÇÃO SIMPLIFICADA: APENAS SENA ==========
     function analisarJogo(jogo, divId) {
         let senas = 0;
-
-        historicoJogos.forEach((h, index) => { 
+        historicoJogos.forEach((h) => { 
             let acertos = h.filter(n => jogo.includes(n)).length;
             if(acertos === 6) senas++;
         });
 
         let html = senas > 0 
-            ? `<span style="color:var(--danger); font-size:1.3em;">⚠️ ESSE JOGO JÁ SAIU ${senas}x NA SENA!</span><br><small style="color:#888;">Não é recomendado jogar números que já ganharam</small>` 
-            : `<span style="color:var(--accent); font-size:1.3em;">✅ JOGO INÉDITO!</span><br><small style="color:#aaa;">Esse jogo nunca ganhou a Sena</small>`;
+            ? `<span style="color:var(--danger); font-size:1.3em;">⚠️ JÁ SAIU ${senas}x NA SENA!</span><br><small style="color:#888;">Não recomendado</small>` 
+            : `<span style="color:var(--accent); font-size:1.3em;">✅ JOGO INÉDITO!</span><br><small style="color:#aaa;">Nunca ganhou a Sena</small>`;
 
         document.getElementById(divId).innerHTML = html;
-
         return {senas};
     }
 
@@ -351,28 +549,38 @@
     function adicionarInputDesdobra() { if(qtdDesdobra < 9) { qtdDesdobra++; atualizarInputsDesdobra(); } }
     function removerInputDesdobra() { if(qtdDesdobra > 7) { qtdDesdobra--; atualizarInputsDesdobra(); } }
     function atualizarInputsDesdobra() {
-        const div = document.getElementById('inputsDesdobra'); div.innerHTML = '';
+        const div = document.getElementById('inputsDesdobra'); 
+        div.innerHTML = '';
         for(let i=0; i<qtdDesdobra; i++) div.innerHTML += `<input type="number" class="num-input desdobra-inp" min="1" max="60">`;
     }
+
     function gerarDesdobramento() {
         let inps = document.querySelectorAll('.desdobra-inp');
         let nums = Array.from(inps).map(i => parseInt(i.value)).filter(n => !isNaN(n) && n>=1 && n<=60);
         nums = [...new Set(nums)].sort((a,b)=>a-b);
         if(nums.length !== qtdDesdobra) return alert(`Digite ${qtdDesdobra} números diferentes.`);
         let combinacoes = getCombinations(nums, 6);
-        let div = document.getElementById('resultadoDesdobra'); div.innerHTML = '';
+        let div = document.getElementById('resultadoDesdobra'); 
+        div.innerHTML = '';
         combinacoes.forEach((c, i) => {
             div.innerHTML += `<div class="game-card"><span>Jogo ${i+1}</span><span style="color:var(--accent)">${c.map(n=>n<10?'0'+n:n).join('-')}</span></div>`;
         });
     }
+
     function getCombinations(valuesArray, k) {
         let result = [];
         function combine(start, combo) {
             if (combo.length === k) { result.push([...combo]); return; }
-            for (let i = start; i < valuesArray.length; i++) { combo.push(valuesArray[i]); combine(i + 1, combo); combo.pop(); }
+            for (let i = start; i < valuesArray.length; i++) { 
+                combo.push(valuesArray[i]); 
+                combine(i + 1, combo); 
+                combo.pop(); 
+            }
         }
-        combine(0, []); return result;
+        combine(0, []); 
+        return result;
     }
+
     function conferirManual() {
         let inps = document.querySelectorAll('.manual-inp');
         let aposta = Array.from(inps).map(i=>parseInt(i.value)).filter(n=>!isNaN(n)&&n>=1&&n<=60);
@@ -383,6 +591,7 @@
         document.getElementById('manualResult').style.display = 'block';
         document.getElementById('btnSalvarManual').style.display = 'block';
     }
+
     function salvarJogoAtual(origem) {
         let j = origem==='manual'?jogoAtualManual:jogoAtualGerado;
         if(!j || j.length!==6) return;
@@ -391,19 +600,35 @@
         h.push({d:new Date().toLocaleDateString(), n:j, t:origem==='manual'?'Manual':'Gerado'});
         localStorage.setItem('meusJogosMega', JSON.stringify(h));
         carregarHistoricoSalvo();
-        alert("Salvo!");
+        alert("✅ Salvo!");
     }
+
     function carregarHistoricoSalvo() {
-        let h = JSON.parse(localStorage.getItem('meusJogosMega'))||[], l = document.getElementById('listaHistorico'); l.innerHTML='';
+        let h = JSON.parse(localStorage.getItem('meusJogosMega'))||[], l = document.getElementById('listaHistorico'); 
+        l.innerHTML='';
         if(h.length===0) l.innerHTML='<li style="color:#666;text-align:center">Vazio</li>';
         h.reverse().forEach((x,i) => {
-            let li=document.createElement('li'); li.className='history-item';
+            let li=document.createElement('li'); 
+            li.className='history-item';
             li.innerHTML=`<div><small style="color:#888">${x.d} (${x.t})</small><br><b style="color:var(--accent)">${x.n.map(n=>n<10?'0'+n:n).join('-')}</b></div><button onclick="rmItem(${h.length-1-i})" style="color:var(--danger);background:none;border:none;cursor:pointer">X</button>`;
             l.appendChild(li);
         });
     }
-    function rmItem(i) { let h=JSON.parse(localStorage.getItem('meusJogosMega'))||[]; h.splice(i,1); localStorage.setItem('meusJogosMega',JSON.stringify(h)); carregarHistoricoSalvo(); }
-    function limparHistorico() { if(confirm("Apagar tudo?")) { localStorage.removeItem('meusJogosMega'); carregarHistoricoSalvo(); } }
+
+    function rmItem(i) { 
+        let h=JSON.parse(localStorage.getItem('meusJogosMega'))||[]; 
+        h.splice(i,1); 
+        localStorage.setItem('meusJogosMega',JSON.stringify(h)); 
+        carregarHistoricoSalvo(); 
+    }
+
+    function limparHistorico() { 
+        if(confirm("Apagar tudo?")) { 
+            localStorage.removeItem('meusJogosMega'); 
+            carregarHistoricoSalvo(); 
+        } 
+    }
 </script>
+
 </body>
 </html>
